@@ -48,7 +48,14 @@ namespace Lexical_Analyzer
         static
         bool ValidateBoolean(string Bool)
         {
-            return true;
+            switch (Bool)
+            {
+                case "YES":
+                case "NO":
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }
