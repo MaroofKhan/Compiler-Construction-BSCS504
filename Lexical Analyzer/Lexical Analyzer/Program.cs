@@ -15,10 +15,15 @@ namespace Lexical_Analyzer
             string[] lines = Filling.Read("source-code.txt");
             foreach (string line in lines)
             {
-                Console.WriteLine(line);
+                string[] words = line.Split(' ');
+                foreach (string word in words)
+                {
+                    String _word = new String(word);
+                    Console.WriteLine(word);
+                    Console.WriteLine(_word.allAlphabets);
+                }
             }
             
-            Filling.Write("token-set.txt", lines);
         }
     }
 }
