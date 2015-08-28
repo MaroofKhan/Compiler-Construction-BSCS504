@@ -11,6 +11,13 @@ namespace Lexical_Analyzer
     {
         public
         static
+        bool ValidateIdentifier(string Identifier)
+        {
+            return true;
+        }
+
+        public
+        static
         bool ValidateInteger(string Int)
         {
             return true;
