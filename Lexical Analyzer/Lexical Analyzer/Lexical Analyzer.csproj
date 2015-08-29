@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Char.cs" />
     <Compile Include="ClassPart.cs" />
     <Compile Include="DeterministicFiniteAutomaton.cs" />
     <Compile Include="Filling.cs" />

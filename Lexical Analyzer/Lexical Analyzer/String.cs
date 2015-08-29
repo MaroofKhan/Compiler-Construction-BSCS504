@@ -22,24 +22,26 @@ namespace Lexical_Analyzer
         {
             get
             {
-                return Regex.IsMatch(value, @"^[a-zA-Z]+$");
+                foreach (char character in value)
+                {
+                    if (!((character > 'a' && character < 'z') || (character > 'A' && character < 'Z')))
+                        return false;
+                }
+                return true;
             }
         }
 
         public
-        bool isPunctuator
+        ClassPart classPart
         {
             get
             {
-                return (value == "{" ||
-                        value == "}" ||
-                        value == "[" ||
-                        value == "]" ||
-                        value == "(" ||
-                        value == ")" ||
-                        value == "," ||
-                        value == ":"
-                        );
+                foreach (ClassPart part in ClassPart.ClassParts)
+                {
+                    if (part.partExists(value))
+                        return part;
+                }
+                return null;
             }
         }
     }
