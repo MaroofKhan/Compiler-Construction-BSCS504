@@ -8,29 +8,37 @@ namespace Lexical_Analyzer
 {
     class Char
     {
-        char value;
-
         public
-        Char(char value)
+        static
+        bool isPunctuator (char character)
         {
-            this.value = value;
+            return (character == '{' ||
+                    character == '}' ||
+                    character == '[' ||
+                    character == ']' ||
+                    character == '(' ||
+                    character == ')' ||
+                    character == ',' ||
+                    character == ':'
+                    );
         }
 
         public
-        bool isPunctuator
+        static
+        bool isAlphabet(char character)
         {
-            get
-            {
-                return (value == '{' ||
-                        value == '}' ||
-                        value == '[' ||
-                        value == ']' ||
-                        value == '(' ||
-                        value == ')' ||
-                        value == ',' ||
-                        value == ':'
-                        );
-            }
+            return (
+                    (
+                        character >= 'a' &&
+                        character <= 'z'
+                    ) ||
+                    (
+                        character >= 'A' &&
+                        character <= 'Z'
+                    )
+                );
         }
+
+
     }
 }

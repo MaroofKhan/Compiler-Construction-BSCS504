@@ -118,8 +118,14 @@ namespace Lexical_Analyzer
             UnaryOperators
         };
 
+        public
+        static
+        ClassPart Identifier = new ClassPart("identifier", new string[] { });
 
+
+        public
         string name;
+        
         string[] parts;
  
         private
@@ -132,12 +138,7 @@ namespace Lexical_Analyzer
         public
         bool partExists(string part)
         {
-            foreach (string _part in parts)
-            {
-                if (_part == part)
-                    return true;
-            }
-            return false;
+            return parts.Contains(part);
         }
     }
 }

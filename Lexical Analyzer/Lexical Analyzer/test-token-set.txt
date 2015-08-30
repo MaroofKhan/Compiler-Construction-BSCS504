@@ -1,0 +1,8 @@
+(variable, firm, 1)
+(identifier, intVal, 1)
+(:, :, 1)
+(data-type, Int, 1)
+(variable, var, 2)
+(identifier, floatVal, 2)
+(:, :, 2)
+(data-type, Float, 2)

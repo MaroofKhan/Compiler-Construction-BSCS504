@@ -18,31 +18,36 @@ namespace Lexical_Analyzer
         }
 
         public
-        bool allAlphabets
+        static
+        bool allAlphabets (string word)
         {
-            get
-            {
-                foreach (char character in value)
-                {
-                    if (!((character > 'a' && character < 'z') || (character > 'A' && character < 'Z')))
-                        return false;
-                }
-                return true;
-            }
+            return Regex.IsMatch(word, @"^[a-zA-Z]+$");
         }
 
         public
-        ClassPart classPart
+        static
+        bool isEmpty(string word)
         {
-            get
+            return (word == string.Empty);
+        }
+
+        public
+        static
+        void appendLine(ref string mainString, string stringToAppend)
+        {
+            mainString += stringToAppend + Environment.NewLine;
+        }
+
+        public
+        static
+        ClassPart classPart (string word)
+        {
+            foreach (ClassPart part in ClassPart.ClassParts)
             {
-                foreach (ClassPart part in ClassPart.ClassParts)
-                {
-                    if (part.partExists(value))
-                        return part;
-                }
-                return null;
+                if (part.partExists(word))
+                return part;
             }
+            return ClassPart.Identifier;
         }
     }
 }

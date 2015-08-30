@@ -27,6 +27,14 @@ namespace Lexical_Analyzer
             File.WriteAllLines(path, lines);
         }
 
+        public
+        static
+        void Write(string fileName, string text)
+        {
+            string path = RootDirectory() + fileName;
+            File.WriteAllText(path, text);
+        }
+
         private
         static
         string RootDirectory()
