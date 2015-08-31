@@ -9,13 +9,6 @@ namespace Lexical_Analyzer
 {
     class String
     {
-        string value;
-
-        public
-        String(string value)
-        {
-            this.value = value;
-        }
 
         public
         static
@@ -23,6 +16,7 @@ namespace Lexical_Analyzer
         {
             return Regex.IsMatch(word, @"^[a-zA-Z]+$");
         }
+
 
         public
         static

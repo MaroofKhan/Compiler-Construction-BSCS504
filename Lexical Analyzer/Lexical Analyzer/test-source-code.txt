@@ -1,2 +1,2 @@
-firm intVal: Int
-var floatVal: Float
+firm intVal:Int = 99
+var floatVal:Float

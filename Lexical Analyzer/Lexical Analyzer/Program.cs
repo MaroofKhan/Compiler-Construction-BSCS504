@@ -46,7 +46,12 @@ namespace Lexical_Analyzer
                         }
                         /* Word with all alphabets covered! -END- */
 
-                        if ((String.isEmpty(temporaryWord)) && Char.isPunctuator(letter))
+                        if (Char.isPunctuator(letter))
+                        {
+                            string token = generateTokenSet(letter, index);
+                            String.appendLine(ref tokenSet, token);
+                        }
+                        else
                         {
                             string token = generateTokenSet(letter, index);
                             String.appendLine(ref tokenSet, token);
