@@ -39,6 +39,26 @@ namespace Lexical_Analyzer
                 );
         }
 
+        public
+        static
+        bool isSimpleArithmeticOperator(char character)
+        {
+            return (
+                character == '+' ||
+                character == '-'
+                );
+        }
+
+        public
+        static
+        bool isArithmeticOperator(char character)
+        {
+            return (
+                character == '*' ||
+                character == '/' ||
+                character == '%'
+                );
+        }
 
     }
 }

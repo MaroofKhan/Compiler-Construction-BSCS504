@@ -50,12 +50,8 @@ namespace Lexical_Analyzer
                         {
                             string token = generateTokenSet(letter, index);
                             String.appendLine(ref tokenSet, token);
-                        }
-                        else
-                        {
-                            string token = generateTokenSet(letter, index);
-                            String.appendLine(ref tokenSet, token);
-                        }
+                        } 
+                        
                     }
                 }
             }
