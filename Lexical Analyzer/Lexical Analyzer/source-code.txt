@@ -1,7 +1,7 @@
 void Main(integer x)
 {
 Char a_b_c ===**=/!=55
-till(a<<<==!!=b)
+till (a<<<==!!=b)
 {
 String a = "abc+=d e"+f
 Char a = 'r' + '\n' + 'abc'+' ++

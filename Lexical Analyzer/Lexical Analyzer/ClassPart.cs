@@ -70,7 +70,7 @@ namespace Lexical_Analyzer
 
         public
         static
-        ClassPart RelationalOperators = new ClassPart("relational-operators", new string[] { "<", ">", "<=", ">=", "!=" });
+        ClassPart RelationalOperators = new ClassPart("relational-operators", new string[] { "<", ">", "<=", ">=", "!=", "!", "==" });
 
         public
         static
@@ -120,7 +120,7 @@ namespace Lexical_Analyzer
 
         public
         static
-        ClassPart Identifier = new ClassPart("identifier", new string[] { });
+        ClassPart Invalid = new ClassPart("invalid-lexene", new string[] { });
 
 
         public
@@ -128,7 +128,7 @@ namespace Lexical_Analyzer
         
         string[] parts;
  
-        private
+        public
         ClassPart(string name, string[] parts)
         {
             this.name = name;

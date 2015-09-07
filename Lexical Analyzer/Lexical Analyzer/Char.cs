@@ -10,6 +10,27 @@ namespace Lexical_Analyzer
     {
         public
         static
+        bool isRelationalOperator(char character)
+        {
+            return (
+                character == '<' ||
+                character == '>' ||
+                character == '!'
+                );
+        }
+
+        public
+        static
+        bool isLogicalOperator(char character)
+        {
+            return (
+                character == '&' ||
+                character == '|'
+                );
+        }
+
+        public
+        static
         bool isPunctuator (char character)
         {
             return (character == '{' ||
@@ -19,6 +40,19 @@ namespace Lexical_Analyzer
                     character == '(' ||
                     character == ')' ||
                     character == ',' ||
+                    character == ':' ||
+                    character == '.' ||
+                    character == '+' ||
+                    character == '-' ||
+                    character == '*' ||
+                    character == '/' ||
+                    character == '.' ||
+                    character == '<' ||
+                    character == '>' ||
+                    character == '=' ||
+                    character == '&' ||
+                    character == '|' ||
+                    character == '!' ||
                     character == ':'
                     );
         }
@@ -27,6 +61,7 @@ namespace Lexical_Analyzer
         static
         bool isAlphabet(char character)
         {
+            
             return (
                     (
                         character >= 'a' &&
@@ -36,6 +71,17 @@ namespace Lexical_Analyzer
                         character >= 'A' &&
                         character <= 'Z'
                     )
+                );
+        }
+
+        public
+        static
+        bool isDigit(char character)
+        {
+            
+            return (
+                    character >= '0' &&
+                    character <= '9'
                 );
         }
 
@@ -57,6 +103,15 @@ namespace Lexical_Analyzer
                 character == '*' ||
                 character == '/' ||
                 character == '%'
+                );
+        }
+
+        public
+        static
+        bool isAssignmentOperator(char character)
+        {
+            return (
+                character == '='
                 );
         }
 
