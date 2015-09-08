@@ -13,19 +13,26 @@ namespace Lexical_Analyzer
         {
             string[] lines = Filling.Read("source-code.txt");
             string tokenSet = string.Empty;
+            bool isMultiLineComment = false;
             for (int index = 1; index <= lines.Length; index++)
             {
                 string line = lines[index - 1];
                 if (String.isEmpty(line)) continue;
                 string[] words = line.Split(' ');
+                bool isString = false;
+                string theString = string.Empty;
+
                 foreach (string word in words)
                 {
-                    if (String.containsBreaker(word))
+
+                    if (String.containsBreaker(word) || isMultiLineComment)
                     {
                         if (DeterministicFiniteAutomaton.ValidateFloat(word))
                         {
-                            string token = generateTokenSet(word, index);
-                            String.appendLine(ref tokenSet, token);
+                            if (!(isMultiLineComment)) {
+                                string token = generateTokenSet(word, index);
+                                String.appendLine(ref tokenSet, token);
+                            }
                         }
                         else
                         {
@@ -33,6 +40,63 @@ namespace Lexical_Analyzer
                             string temporaryWord;
                             for (int letterIndex = 0; letterIndex < letters.Length; letterIndex++)
                             {
+                                
+                                if (isMultiLineComment)
+                                {
+                                    
+                                    if (letterIndex < letters.Length - 1 && letters[letterIndex] == '-' && letters[letterIndex + 1] == '|')
+                                    {
+                                        
+                                        isMultiLineComment = false;
+                                        letterIndex++;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+
+                                }
+                                if (letterIndex < letters.Length - 1 && letters[letterIndex] == '|' && letters[letterIndex + 1] == '-')
+                                {
+                                    
+                                    letterIndex++;
+                                    isMultiLineComment = true;
+                                    continue;
+                                }
+
+                                if (letterIndex < letters.Length - 1 && letters[letterIndex] == '/' && letters[letterIndex + 1] == '/')
+                                {
+                                    goto IgnoreLine;
+                                }
+
+                                
+                                if (isString)
+                                {
+                                    if (letters[letterIndex] == '"')
+                                    {
+                                        theString += letters[letterIndex];
+                                        string token = "(" + "string-constant, " + theString + ", " + index + ")";
+                                        String.appendLine(ref tokenSet, token);
+                                        isString = false;
+                                        theString = string.Empty;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        theString += letters[letterIndex];
+                                        continue;
+                                    }
+                                    
+                                }
+
+                                if (letters[letterIndex] == '"')
+                                {
+                                    theString += letters[letterIndex];
+                                    isString = true;
+                                    continue;
+                                }
+                               
                                 int currentLetterIndex = letterIndex;
                                 temporaryWord = string.Empty;
                                 if (Char.isPunctuator(letters[letterIndex]))
@@ -134,6 +198,7 @@ namespace Lexical_Analyzer
                                         goto Continue;
                                     }
                                 }
+                                 
 
                                 
 
@@ -362,7 +427,8 @@ namespace Lexical_Analyzer
                         */
                     //}
                 }
-                
+            IgnoreLine:
+                continue;
             }
             Console.WriteLine(tokenSet);
             Filling.Write("test-token-set.txt", tokenSet);

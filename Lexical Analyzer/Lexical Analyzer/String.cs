@@ -48,7 +48,8 @@ namespace Lexical_Analyzer
                 word.Contains(']')  ||
                 word.Contains('(')  ||
                 word.Contains(')')  ||
-                word.Contains(':')
+                word.Contains(':')  ||
+                word.Contains('"') 
                 );
         }
 
