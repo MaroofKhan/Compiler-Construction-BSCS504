@@ -1,0 +1,8 @@
+(identifier,val2,1)
+(datatype,float,1)
+(:,:,1)
+(identifier,x,1)
+(identifier,value,2)
+(datatype,int,2)
+(:,:,2)
+(integer_constant,5,2)
