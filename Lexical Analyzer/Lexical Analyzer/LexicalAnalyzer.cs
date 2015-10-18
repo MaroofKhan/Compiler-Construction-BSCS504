@@ -13,6 +13,11 @@ namespace Lexical_Analyzer
         {
             this.lines = code;
 
+            
+        }
+
+        public void analyze(string fileName)
+        {
             for (int lineNumber = 0; lineNumber < lines.Length; lineNumber++)
             {
                 string line = lines[lineNumber];
@@ -88,7 +93,7 @@ namespace Lexical_Analyzer
                                     if (letters[letterIndex] == '"')
                                     {
                                         theString += letters[letterIndex];
-                                        string token = "(" + "string-constant, " + theString.Replace("-", " ") + ", " + index + ")";
+                                        string token = "(" + "string-constant|" + theString.Replace("-", " ") + "|" + index + ")";
                                         String.appendLine(ref tokenSet, token);
                                         isString = false;
                                         theString = string.Empty;
@@ -499,20 +504,20 @@ namespace Lexical_Analyzer
             IgnoreLine:
                 continue;
             }
-            Filling.Write("token-set.txt", tokenSet);
+            Filling.Write(fileName, tokenSet);
         }
 
-        static
+        private
         string generateTokenSet(string word, int line)
         {
             ClassPart classPart = String.classPart(word);
-            return ("(" + classPart.name + ", " + word + ", " + line + ")");
+            return ("(" + classPart.name + "|" + word + "|" + line + ")");
         }
 
-        static
+        private
         string generateTokenSet(char letter, int line)
         {
-            return ("(" + letter + ", " + letter + ", " + line + ")");
+            return ("(" + letter + "|" + letter + "|" + line + ")");
         }
     }
 }

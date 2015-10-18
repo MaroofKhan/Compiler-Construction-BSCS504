@@ -1,4 +1,4 @@
-var integer: Int = 0 , float_: Float = 0.0
+var integer : Int = 0 , float_ : Float = 0.0
 firm float = 0.0
 firm string = "This is a string!"
 var char = '\n'
@@ -20,5 +20,5 @@ repeat {
 else {
 }
 
-task X__X (string: String, int: Int) {
+task X__X ( string : String, int : Int ) {
 }

@@ -11,9 +11,16 @@ namespace Lexical_Analyzer
     {
         static void Main(string[] args)
         {
-
-            string[] lines = Filling.Read("source-code.txt");
+            const string sourceCode = "source-code.txt",
+                         tokenSet   = "token-set.txt";
+            
+            string[] lines = Filling.Read(sourceCode);
             LexicalAnalyzer LA = new LexicalAnalyzer(lines);
+            LA.analyze(tokenSet);
+
+            string[] tokens = Filling.Read(tokenSet);
+            SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
+            SA.analyze();
 
         }
     }
