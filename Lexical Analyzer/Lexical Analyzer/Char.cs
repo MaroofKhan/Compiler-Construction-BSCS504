@@ -53,7 +53,8 @@ namespace Lexical_Analyzer
                     character == '&' ||
                     character == '|' ||
                     character == '!' ||
-                    character == ':'
+                    character == ':' ||
+                    character == ','
                     );
         }
 

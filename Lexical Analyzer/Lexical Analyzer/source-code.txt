@@ -1,10 +1,24 @@
-void Main(integer x)
-{
-|- Char a_b_c ===**=/!=55
-till (a<<<==!!=b)
-{
-String a = "abc+=d e" +f
-Char a = 'r' + '\n' + 'abc'+' ++ -|
-//return (5*6 -- a=b=c*d)
+var integer: Int = 0 , float_: Float = 0.0
+firm float = 0.0
+firm string = "This is a string!"
+var char = '\n'
+till YES {
+var value = 0
+value = value + 1
+value += 2
+//value++
+value--
 }
+whenever x_x_x {
+till X {
+}
+}
+else whenever y {
+repeat {
+} till Y
+}
+else {
+}
+
+task X__X (string: String, int: Int) {
 }

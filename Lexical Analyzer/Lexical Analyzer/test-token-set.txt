@@ -1,7 +1,0 @@
-(identifier, void, 1)
-(identifier, Main, 1)
-(identifier, integer, 1)
-(identifier, x, 1)
-({, {, 2)
-(}, }, 9)
-(}, }, 10)

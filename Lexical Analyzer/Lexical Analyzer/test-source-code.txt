@@ -1,6 +1,0 @@
-var x: Float = 0.6
-firm a_b *= 0.6
-<=
-!=
-&&
-"Hi dude!"
