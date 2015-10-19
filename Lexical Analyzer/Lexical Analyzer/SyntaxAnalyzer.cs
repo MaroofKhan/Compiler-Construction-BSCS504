@@ -16,35 +16,32 @@ namespace Lexical_Analyzer
 
         public void analyze()
         {
-            int lineNumber = 1;
             List<string> lines = new List<string>();
-            for (int token = 0; token < tokens.Length; lineNumber++)
+            List<int> numbers = new List<int>();
+            for (int token = 0; token < tokens.Length; token++)
             {
-                string statement = string.Empty;
-                while (token < tokens.Length && line(tokens[token]) == lineNumber)
-                {
-                    statement += ((statement == string.Empty) ? classpart(tokens[token]) : " " + classpart(tokens[token]));
-                    token++;
-                }
-
-                lines.Add(statement);
+                lines.Add(classpart(tokens[token]));
+                numbers.Add(line(tokens[token]));
             }
 
-            string[] statements = lines.ToArray();
-            foreach (string statement in statements)
+            Parser parser = new Parser();
+            parser.lineNumbers = numbers.ToArray();
+            parser.sentence = lines.ToArray();
+            int[] errors = parser.parse();
+            foreach (int error in errors)
             {
-                Console.WriteLine(statement);
+                Console.WriteLine(error);
             }
         }
 
         private string classpart(string token)
         {
-            return token.Replace(" ", "-").Replace("(", "").Replace(")", "").Replace("|", " ").Split(' ')[0];
+            return token.Replace(" ", "-").Replace("~", "").Replace("~", "").Replace("|", " ").Split(' ')[0];
         }
         private int line(string token)
         {
             return Convert.ToInt32(
-                    token.Replace(" ", "-").Replace("(", "").Replace(")", "").Replace("|", " ").Split(' ')[2]
+                    token.Replace(" ", "-").Replace("~", "").Replace("~", "").Replace("|", " ").Split(' ')[2]
                 );
         }
     }

@@ -511,13 +511,13 @@ namespace Lexical_Analyzer
         string generateTokenSet(string word, int line)
         {
             ClassPart classPart = String.classPart(word);
-            return ("(" + classPart.name + "|" + word + "|" + line + ")");
+            return ("~" + classPart.name + "|" + word + "|" + line + "~");
         }
 
         private
         string generateTokenSet(char letter, int line)
         {
-            return ("(" + letter + "|" + letter + "|" + line + ")");
+            return ("~" + letter + "|" + letter + "|" + line + "~");
         }
     }
 }

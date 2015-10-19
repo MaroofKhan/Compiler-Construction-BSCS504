@@ -74,7 +74,11 @@ namespace Lexical_Analyzer
 
         public
         static
-        ClassPart AssignmentOperators = new ClassPart("assignment-operators", new string[] { "=", "+=", "-=", "*=", "/=", "%="});
+        ClassPart AssignmentOperators = new ClassPart("assignment-operators", new string[] { "+=", "-=", "*=", "/=", "%="});
+
+        public
+        static
+        ClassPart DirectAssignmentOperator = new ClassPart("direct-assignment-operator", new string[] { "=" });
 
         public
         static
@@ -86,7 +90,7 @@ namespace Lexical_Analyzer
 
         public
         static
-        ClassPart LogicalOperators = new ClassPart("logical-operators", new string[] { "&&", "||" });
+        ClassPart LogicalOperators = new ClassPart("logical-operators", new string[] { "AND", "OR" });
 
         public
         static
@@ -112,6 +116,7 @@ namespace Lexical_Analyzer
             Returns,
             RelationalOperators,
             AssignmentOperators,
+            DirectAssignmentOperator,
             SimpleArithmeticOperators,
             ArithmeticOperators,
             LogicalOperators,
