@@ -4,3 +4,9 @@ F:\Compiler\Compiler\bin\Debug\Compiler.pdb
 F:\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
 F:\Compiler\Compiler\obj\Debug\Compiler.exe
 F:\Compiler\Compiler\obj\Debug\Compiler.pdb
+D:\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe.config
+D:\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.exe
+D:\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.pdb
+D:\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
+D:\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb
+D:\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache

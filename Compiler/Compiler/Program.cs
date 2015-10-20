@@ -11,6 +11,8 @@ namespace Compiler
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(Regex.IsMatch("'\\\n'", @"^'\\(\s)'$"));
+
             string[] code = Filling.Read("source-code.txt");
             LexicalAnalyzer LA = new LexicalAnalyzer(code);
             LA.analyze("token-set.txt");

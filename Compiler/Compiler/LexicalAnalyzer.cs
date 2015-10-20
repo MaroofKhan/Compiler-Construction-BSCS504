@@ -46,6 +46,8 @@ namespace Compiler
                 {
                     string word = words[wordCount];
 
+                    if (word == string.Empty) continue;
+
                     if (SingleLineComment) continue;
 
                     if (String)
@@ -63,9 +65,14 @@ namespace Compiler
                         }
                         else continue;
 
-                    
 
-                    if (Language.containsBreaker(word))
+                    if (RegularExpression.ValidateFloat(word))
+                    {
+                        Token token = new Token(ClassPart.classPart(word), word, (lineCount + 1));
+                        tokens.Add(token);
+                        continue;
+                    }
+                    else if (Language.containsBreaker(word))
                     {
                         string _word = string.Empty;
                         for (int letterCount = 0; letterCount < word.Length; letterCount++)
@@ -260,6 +267,25 @@ namespace Compiler
                                             tokens.Add(_token);
                                             _word = string.Empty;
                                         }
+
+                                        int _index = 1;
+                                        string _temporary = letter.ToString();
+                                        while ((letterCount + _index < word.Length) && word[letterCount + _index] != '\'')
+                                        {
+                                            _temporary += word[letterCount + _index];
+                                            _index++;
+                                        }
+
+                                        if ((letterCount + _index < word.Length) && word[letterCount + _index] == '\'')
+                                            _temporary += '\'';
+
+                                        Token __token = new Token(ClassPart.classPart(_temporary), _temporary, (lineCount + 1));
+                                        tokens.Add(__token);
+                                        letterCount += _index;
+
+
+
+                                        /*
                                         if (((letterCount + 2) < word.Length) && (word[letterCount + 2] == '\''))
                                         {
                                             string temporary = letter.ToString() + word[letterCount + 1] + word[letterCount + 2];
@@ -267,13 +293,13 @@ namespace Compiler
                                             tokens.Add(_token);
                                             letterCount += 2;
                                         }
-                                        else if (((letterCount + 3) < word.Length) && ((letterCount + 1) == '\\') &&(word[letterCount + 3] == '\''))
+                                        else if (((letterCount + 3) < word.Length) && (word[letterCount + 1] == '\\') && (word[letterCount + 3] == '\''))
                                         {
                                             string temporary = letter.ToString() + word[letterCount + 1] + word[letterCount + 2] + word[letterCount + 3];
                                             Token _token = new Token(ClassPart.classPart(temporary), temporary, (lineCount + 1));
                                             tokens.Add(_token);
                                             letterCount += 3;
-                                        }
+                                        }*/
                                         break;
 
                                     default:
@@ -283,6 +309,11 @@ namespace Compiler
                             }
                             else
                             {
+                                if (String)
+                                {
+                                    StringConstant += letter;
+                                    continue;
+                                }
                                 _word += letter;
                             }
                         }

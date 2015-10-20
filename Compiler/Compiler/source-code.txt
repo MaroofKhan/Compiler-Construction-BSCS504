@@ -1,8 +1,2 @@
-private var x:Int = 0,y:Float
-task x {
-till y {
-}
-}
-0+=1
-
-0.0.float..
+'b'
+'\n'
