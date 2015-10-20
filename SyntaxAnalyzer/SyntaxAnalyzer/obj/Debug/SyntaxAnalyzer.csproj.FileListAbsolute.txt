@@ -1,9 +1,0 @@
-c:\users\usman ahmed\documents\visual studio 2012\Projects\SyntaxAnalyzer\SyntaxAnalyzer\bin\Debug\SyntaxAnalyzer.exe.config
-c:\users\usman ahmed\documents\visual studio 2012\Projects\SyntaxAnalyzer\SyntaxAnalyzer\bin\Debug\SyntaxAnalyzer.exe
-c:\users\usman ahmed\documents\visual studio 2012\Projects\SyntaxAnalyzer\SyntaxAnalyzer\bin\Debug\SyntaxAnalyzer.pdb
-c:\users\usman ahmed\documents\visual studio 2012\Projects\SyntaxAnalyzer\SyntaxAnalyzer\obj\Debug\SyntaxAnalyzer.exe
-c:\users\usman ahmed\documents\visual studio 2012\Projects\SyntaxAnalyzer\SyntaxAnalyzer\obj\Debug\SyntaxAnalyzer.pdb
-c:\users\usman ahmed\documents\visual studio 2012\Projects\SyntaxAnalyzer\SyntaxAnalyzer\obj\Debug\SyntaxAnalyzer.csprojResolveAssemblyReference.cache
-D:\Compiler-Construction-BSCS504\SyntaxAnalyzer\SyntaxAnalyzer\bin\Debug\SyntaxAnalyzer.exe.config
-D:\Compiler-Construction-BSCS504\SyntaxAnalyzer\SyntaxAnalyzer\obj\Debug\SyntaxAnalyzer.exe
-D:\Compiler-Construction-BSCS504\SyntaxAnalyzer\SyntaxAnalyzer\obj\Debug\SyntaxAnalyzer.pdb

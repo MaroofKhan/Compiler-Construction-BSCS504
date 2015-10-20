@@ -1,6 +1,0 @@
-D:\Compiler-Construction-BSCS504\Lexical Analyzer\Lexical Analyzer\bin\Debug\Lexical Analyzer.exe.config
-D:\Compiler-Construction-BSCS504\Lexical Analyzer\Lexical Analyzer\bin\Debug\Lexical Analyzer.exe
-D:\Compiler-Construction-BSCS504\Lexical Analyzer\Lexical Analyzer\bin\Debug\Lexical Analyzer.pdb
-D:\Compiler-Construction-BSCS504\Lexical Analyzer\Lexical Analyzer\obj\Debug\Lexical Analyzer.csprojResolveAssemblyReference.cache
-D:\Compiler-Construction-BSCS504\Lexical Analyzer\Lexical Analyzer\obj\Debug\Lexical Analyzer.exe
-D:\Compiler-Construction-BSCS504\Lexical Analyzer\Lexical Analyzer\obj\Debug\Lexical Analyzer.pdb

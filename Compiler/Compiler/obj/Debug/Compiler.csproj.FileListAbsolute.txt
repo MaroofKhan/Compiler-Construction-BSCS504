@@ -1,0 +1,6 @@
+F:\Compiler\Compiler\bin\Debug\Compiler.exe.config
+F:\Compiler\Compiler\bin\Debug\Compiler.exe
+F:\Compiler\Compiler\bin\Debug\Compiler.pdb
+F:\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
+F:\Compiler\Compiler\obj\Debug\Compiler.exe
+F:\Compiler\Compiler\obj\Debug\Compiler.pdb
