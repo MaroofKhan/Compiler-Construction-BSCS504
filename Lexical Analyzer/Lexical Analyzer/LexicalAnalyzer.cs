@@ -33,12 +33,26 @@ namespace Lexical_Analyzer
 
                     lines[lineNumber] = line1 + line2;
                 }
+                lines[lineNumber] = lines[lineNumber].Replace(", ", ",").Replace(" ,", ",").Replace(",", " , ");
+                lines[lineNumber] = lines[lineNumber].Replace(": ", ":").Replace(" :", ":").Replace(":", " : ");
+                lines[lineNumber] = lines[lineNumber].Replace("{ ", "{").Replace(" {", "{").Replace("{", " { ");
+                lines[lineNumber] = lines[lineNumber].Replace("} ", "}").Replace(" }", "}").Replace("}", " } ");
+                lines[lineNumber] = lines[lineNumber].Replace("( ", "(").Replace(" (", "(").Replace("(", " ( ");
+                lines[lineNumber] = lines[lineNumber].Replace(") ", ")").Replace(" )", ")").Replace(")", " ) ");
             }
 
             string tokenSet = string.Empty;
             bool isMultiLineComment = false;
             for (int index = 1; index <= lines.Length; index++)
             {
+
+                if (lines[index - 1] == " ( ") lines[index - 1].Replace(" ( ", "(");
+                if (lines[index - 1] == " ) ") lines[index - 1].Replace(" ) ", ")");
+                if (lines[index - 1] == " { ") lines[index - 1].Replace(" { ", "{");
+                if (lines[index - 1] == " } ") lines[index - 1].Replace(" } ", "}");
+                if (lines[index - 1] == " , ") lines[index - 1].Replace(" , ", ",");
+                if (lines[index - 1] == " : ") lines[index - 1].Replace(" : ", ":");
+
                 string line = lines[index - 1];
                 if (String.isEmpty(line)) continue;
                 string[] words = line.Split(' ');

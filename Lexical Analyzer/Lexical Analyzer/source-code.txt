@@ -1,3 +1,8 @@
+public till x {
+}
+whenever else whenever {
+}
+
 |- public var x : Int = 0 , y : Float , z = 3.3
 internal firm x : Float
 private firm y : String = "This is a string!"

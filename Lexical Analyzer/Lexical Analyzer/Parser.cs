@@ -20,6 +20,9 @@ namespace Lexical_Analyzer
                     whenever() || till_loop() || repeat_till_loop() || task()))
                 {
                     error.Add(lineNumbers[index]);
+                    int number = lineNumbers[index];
+                    while (check && number == lineNumbers[index])
+                        index++;
                     _index--;
                 }
 
