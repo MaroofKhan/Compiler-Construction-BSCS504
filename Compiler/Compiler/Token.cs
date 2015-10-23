@@ -9,7 +9,7 @@ namespace Compiler
 {
     class Token
     {
-        ClassPart classpart;
+        public ClassPart classpart;
         string valuepart;
         int line;
 
@@ -29,18 +29,28 @@ namespace Compiler
 
         public Token(string token)
         {
-            if (Regex.IsMatch(token, @"^\(([a-zA-Z]*),(\s*)([a-zA-Z]*),(\s*)([0-9]*)\)$"))
+            if (Regex.IsMatch(token, @"^\((,*),(\s*)(,*),(\s*)([0-9]*)\)$"))
+            {
+                this.classpart = new ClassPart(",", new string[] { });
+                this.valuepart = ",";
+                token = token.Substring(1);
+                token = token.Substring(0, token.Length - 1);
+                token = token.Replace(" ", "").Replace(",", "");
+                this.line = Convert.ToInt32(token);
+            }
+            else if (Regex.IsMatch(token, @"^\(((.)*),(\s*)((.)*),(\s*)([0-9]*)\)$"))
             {
                 token = token.Substring(1);
                 token = token.Substring(0, token.Length - 1);
                 token = token.Replace(" ", "");
-                string[] parts = token.Split('~');
+                string[] parts = token.Split(',');
 
-                this.classpart = ClassPart.classPart(parts[0]);
+                this.classpart = new ClassPart(parts[0], new string[] { });
                 this.valuepart = parts[1];
                 this.line = Convert.ToInt32(parts[2]);
 
             }
+            
             else throw new ArgumentException("DAMN!\nToken ain't the right format.");
         }
 

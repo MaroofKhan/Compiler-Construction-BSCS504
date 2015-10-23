@@ -10,3 +10,9 @@ D:\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.pdb
 D:\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
 D:\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb
 D:\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
+F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe.config
+F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.exe
+F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.pdb
+F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
+F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb
+F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache

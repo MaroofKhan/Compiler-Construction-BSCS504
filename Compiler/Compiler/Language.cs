@@ -8,6 +8,13 @@ namespace Compiler
 {
     static class Language
     {
+
+        public
+        static
+        string[] ACCESSMODIFIERS = { "access-modifiers", "NULL" };
+
+
+
         public
         static
         bool isPunctuator(char character)

@@ -14,10 +14,6 @@ namespace Compiler
 
         public
         static
-        ClassPart ArrayDataTypes = new ClassPart("array-data-types", new string[] { "[Int]", "[Float]", "[Char]", "[String]", "[Bool]" });
-
-        public
-        static
         ClassPart Else = new ClassPart("else", new string[] { "else" });
 
         public
@@ -82,10 +78,6 @@ namespace Compiler
 
         public
         static
-        ClassPart DirectAssignmentOperator = new ClassPart("direct-assignment-operator", new string[] { "=" });
-
-        public
-        static
         ClassPart SimpleArithmeticOperators = new ClassPart("simple-arithmetic-operators", new string[] { "+", "-" });
 
         public
@@ -120,7 +112,6 @@ namespace Compiler
             Returns,
             RelationalOperators,
             AssignmentOperators,
-            DirectAssignmentOperator,
             SimpleArithmeticOperators,
             ArithmeticOperators,
             LogicalOperators,

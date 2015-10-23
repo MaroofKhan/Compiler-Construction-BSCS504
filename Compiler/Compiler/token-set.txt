@@ -1,2 +1,6 @@
-(character-constant,'b',1)
-(invalid-lexene,'\n',2)
+(variable,var,1)
+(identifier,x,1)
+(=,=,1)
+(identifier,X,1)
+((,(,1)
+(),),1)

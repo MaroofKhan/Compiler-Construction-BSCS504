@@ -11,11 +11,17 @@ namespace Compiler
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Regex.IsMatch("'\\\n'", @"^'\\(\s)'$"));
 
-            string[] code = Filling.Read("source-code.txt");
+            const string sourcecode = "source-code.txt";
+            const string tokenset = "token-set.txt";
+
+            string[] code = Filling.Read(sourcecode);
             LexicalAnalyzer LA = new LexicalAnalyzer(code);
-            LA.analyze("token-set.txt");
+            LA.analyze(tokenset);
+
+            string[] tokens = Filling.Read(tokenset);
+            SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
+            SA.analyze();
 
 
         }

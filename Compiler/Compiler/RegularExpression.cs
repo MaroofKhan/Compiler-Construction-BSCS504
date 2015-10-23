@@ -42,7 +42,7 @@ namespace Compiler
         static
         bool ValidateCharacter(string Char)
         {
-            return (Regex.IsMatch(Char, @"^'(\w)'$") || Regex.IsMatch(Char, @"^'\s'$"));
+            return (Regex.IsMatch(Char, @"^'(\w)'$") || Regex.IsMatch(Char, @"^'\\[n,b,r,t]'$") || Regex.IsMatch(Char, @"^' '$"));
         }
 
         public

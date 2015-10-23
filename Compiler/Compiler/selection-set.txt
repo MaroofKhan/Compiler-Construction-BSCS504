@@ -1,0 +1,10 @@
+<DECLARATION> -> access-modifiers
+access-modifiers -> variable | task | class | structure
+variable -> identifier
+: -> data-type
+data-type -> direct-assignment-operator | , | TERMINATE
+direct-assignment-operator -> identifier | integer-constant | float-constant
+integer-constant -> , | TERMINATE
+float-constant -> , | TERMINATE
+, -> identifier
+identifier -> : | direct-assignment-operator | TERMINATE
