@@ -9,7 +9,6 @@ namespace Compiler
     class SyntaxAnalyzer
     {
         Token[] tokenSet;
-        Selection[] selectionSet;
 
         public SyntaxAnalyzer(string[] tokenSet)
         {
@@ -19,10 +18,11 @@ namespace Compiler
             this.tokenSet = tokens.ToArray();
         }
 
-        public void analyze()
+        public int analyze()
         {
-            Token token = (new Parser(tokenSet)).parse("asdsad");
-            Console.WriteLine("OUT: " + (token == null ? "PARSED!" : token.token));
+            Parser.SetUpMainParser(tokenSet);
+            int tokenIndex = Parser.MainParser.parse();
+            return tokenIndex;
         }
     }
 }

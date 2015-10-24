@@ -10,8 +10,8 @@ namespace Compiler
     class Token
     {
         public ClassPart classpart;
-        string valuepart;
-        int line;
+        public string valuepart;
+        public int line;
 
         public Token(ClassPart classpart, string valuepart, int line)
         {

@@ -16,3 +16,9 @@ F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.pdb
 F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
 F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb
 F:\Code\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
+F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe.config
+F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.exe
+F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.pdb
+F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
+F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb
+F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
