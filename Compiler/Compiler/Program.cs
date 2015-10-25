@@ -25,13 +25,14 @@ namespace Compiler
             SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
             int tokenIndex = SA.analyze();
 
+            
             if (tokenIndex == -1)
             {
                 Console.WriteLine("Successfully parsed!");
             }
             else
             {
-                Token token = new Token(tokens[tokenIndex - 1]);
+                Token token = new Token(tokens[(tokenIndex < tokens.Length) ? tokenIndex : tokenIndex - 1]);
                 string line = code[token.line - 1];
                 int index = line.IndexOf(token.valuepart);
                 string error = string.Empty;

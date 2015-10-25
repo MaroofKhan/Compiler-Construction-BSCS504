@@ -40,10 +40,7 @@ namespace Compiler
                     if (line.Contains("-|"))
                     {
                         int index = line.IndexOf("-|");
-                        Console.WriteLine(line.Length);
-                        Console.WriteLine(index);
                         line = line.Substring(index + 2, (line.Length - index - 2));
-                        Console.WriteLine(line);
                         MultiLineComment = false;
                     }
                     else continue;
@@ -53,9 +50,6 @@ namespace Compiler
 
                 for (int wordCount = 0; wordCount < words.Length; wordCount++)
                 {
-                    bool Float = false;
-                    string FloatConstant = string.Empty;
-
                     string word = words[wordCount];
 
                     if (word == string.Empty) continue;
@@ -87,6 +81,9 @@ namespace Compiler
 
                             StringConstant = string.Empty;
                             String = false;
+
+                            if (word == string.Empty)
+                                continue;
                         }
                         else
                         {
@@ -110,41 +107,10 @@ namespace Compiler
                     {
                         string _word = string.Empty;
 
-
                         for (int letterCount = 0; letterCount < word.Length; letterCount++)
                         {
                             char letter = word[letterCount];
 
-                            if (Float)
-                            {
-                                if (Regex.IsMatch(letter.ToString(), @"^[0-9]$"))
-                                {
-                                    FloatConstant += letter;
-                                    _word = string.Empty;
-                                    continue;
-                                }
-                                else
-                                {
-                                    if (_word != string.Empty)
-                                    {
-                                        Token _token = new Token(ClassPart.classPart(_word), FloatConstant, (lineCount + 1));
-                                        tokens.Add(_token);
-
-                                        Token __token = new Token('.', (lineCount + 1));
-                                        tokens.Add(__token);
-                                    }
-                                    else
-                                    {
-                                        Token _token = new Token(ClassPart.classPart(FloatConstant), FloatConstant, (lineCount + 1));
-                                        tokens.Add(_token);
-
-                                        FloatConstant = string.Empty;
-                                        Float = false;
-                                    }
-                                }
-                            }
-
-                            
                             string __word = word.Substring(letterCount, word.Length - letterCount);
 
                             if (MultiLineComment)
@@ -163,25 +129,47 @@ namespace Compiler
                                             StringConstant += letter;
                                             continue;
                                         }
-
                                         if (!(_word == string.Empty))
                                         {
                                             if (Regex.IsMatch(_word, @"^[0-9]+$"))
                                             {
-                                                FloatConstant = _word + letter;
-                                                Float = true;
-                                                continue;
+                                                string _constant = _word + letter;
+                                                string _LAD = string.Empty;
+                                                int _i = 1; 
+                                                while (letterCount + _i < word.Length && Regex.IsMatch(word[letterCount + _i].ToString(), @"^[0-9]$"))
+                                                {
+                                                    _LAD += word[letterCount + _i];
+                                                    _i++;
+                                                }
+
+                                                if (_LAD == string.Empty)
+                                                {
+                                                    Token _t_ = new Token(ClassPart.classPart(_word), _word, (lineCount + 1));
+                                                    tokens.Add(_t_);
+
+                                                    Token __t_ = new Token(letter, (lineCount + 1));
+                                                    tokens.Add(__t_);
+
+                                                    continue;
+                                                } 
+                                                else if (Regex.IsMatch(_LAD, @"^[0-9]+$"))
+                                                {
+                                                    _constant = _constant + _LAD;
+                                                    Token t = new Token(ClassPart.classPart(_constant), _constant, (lineCount + 1));
+                                                    tokens.Add(t);
+                                                    letterCount += _i - 1;
+                                                    _word = string.Empty;
+                                                    continue;
+                                                }
                                             }
 
-                                            Token _token = new Token(ClassPart.classPart(_word), _word, (lineCount + 1));
-                                            tokens.Add(_token);
-                                            _word = string.Empty;
+                                            Token _t = new Token(ClassPart.classPart(_word), _word, (lineCount + 1));
+                                            tokens.Add(_t);
                                         }
+                                        Token __t = new Token(letter, (lineCount + 1));
+                                        tokens.Add(__t);
 
-                                        Token __token_ = new Token(letter, (lineCount + 1));
-                                        tokens.Add(__token_);
                                         break;
-
                                     case '{':
                                     case '}':
                                     case '(':
@@ -517,6 +505,7 @@ namespace Compiler
             for (int index = 0; index < array.Length; index++)
             {
                 tokenset[index] = array[index].token;
+                Console.WriteLine(index + ": " + tokenset[index]);
             }
             Filling.Write(outputFileName, tokenset);
         }

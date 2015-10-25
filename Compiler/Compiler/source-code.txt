@@ -1,19 +1,4 @@
-x = 3
-x = x
-
-x.y(x, y, "This is a string!")
-
 class Y {
-public commence () {
 }
-
-task y (x: Int, y: Float, z:String) {
-var x = 3
-x = x
-y = y
-till x {
-}
-}
-
-}
-
+class X {
+x=0.0

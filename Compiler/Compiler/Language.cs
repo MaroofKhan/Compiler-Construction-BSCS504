@@ -11,12 +11,6 @@ namespace Compiler
 
         public
         static
-        string[] ACCESSMODIFIERS = { "access-modifiers", "NULL" };
-
-
-
-        public
-        static
         bool isPunctuator(char character)
         {
             return (character == '{' ||

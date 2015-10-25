@@ -21,8 +21,7 @@ namespace Compiler
         public int analyze()
         {
             Parser.SetUpMainParser(tokenSet);
-            int tokenIndex = Parser.MainParser.parse();
-            return tokenIndex;
+            return Parser.MainParser.parse();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Compiler
         static
         bool ValidateFloat(string Float)
         {
-            return (Regex.IsMatch(Float, @"^[0-9]*(?:\.[0-9]+)?$"));
+            return (Regex.IsMatch(Float, @"^[0-9]*(\.[0-9]+)$"));
         }
 
         public

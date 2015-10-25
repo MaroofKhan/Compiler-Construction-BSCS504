@@ -22,3 +22,9 @@ F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\C
 F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
 F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb
 F:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
+D:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe.config
+D:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.exe
+D:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.pdb
+D:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\obj\Debug\Compiler.csprojResolveAssemblyReference.cache
+D:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.exe
+D:\Code\Repositories\Compiler-Construction-BSCS504\Compiler\Compiler\bin\Debug\Compiler.pdb

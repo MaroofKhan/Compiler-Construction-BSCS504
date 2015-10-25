@@ -30,127 +30,62 @@ namespace Compiler
 
         public int parse()
         {
-
-            if (START())
-            {
+            if (Start())
                 return -1;
-            } else {
-                return tokenIndex + 1;
-                
-            }
+            else return tokenIndex;
         }
 
-        bool START()
+        bool Start()
         {
-            if (GLOBALBODY())
-            {
-                if (START())
-                    return true;
-                else if (!(tokenIndex < tokens.Length))
-                    return true;
-            }
 
-            return false;
+            if (tokenIndex < tokens.Length)
+                if (GlobalBody())
+                    return Start();
+                else return false;
+            else return true;
+
         }
 
-        bool GLOBALBODY()
+        bool GlobalBody()
         {
-            return (DECLARATION() || VARIABLEDECLARATION() || TASK() || CLASS() || STRUCTURE() || ASSIGNMENT() || UNARY() || OBJMETHODS() || OBJPROPERTIES() || WHENEVER());
+            int _tokenIndex = tokenIndex;
+            if (Declarations())
+                return true;
+            else if (tokenIndex == _tokenIndex && Whenever())
+                return true;
+            else if (tokenIndex == _tokenIndex && Loops())
+                return true;
+            else if (tokenIndex == _tokenIndex && Assignment())
+                return true;
+            else return false;
         }
 
-        bool index
-        {
-            get
-            {
-                return tokenIndex < tokens.Length;
-            }
-        }
-
-        bool WHENEVER()
-        {
-            if (index && tokens[tokenIndex] == "whenever")
-            {
-                tokenIndex++;
-                if (CONDITION())
-                {
-                    if (index && tokens[tokenIndex] == "{")
-                    {
-                        tokenIndex++;
-                        if (COREBODY())
-                        {
-                            if (index && tokens[tokenIndex] == "}")
-                            {
-                                tokenIndex++;
-                                if (ELSE())
-                                {
-                                    return true;
-                                }
-                                else
-                                {
-                                    return true;
-                                }
-                            }
-                            else
-                                return false;
-                        }
-                        tokenIndex--;
-                    }
-                }
-                tokenIndex--;
-            }
-            return false;
-        }
-
-        bool ELSE()
-        {
-            if (index && tokens[tokenIndex] == "else")
-            {
-                tokenIndex++;
-                if (WHENEVER())
-                {
-                    if (ELSE())
-                    {
-                        return true;
-                    }
-
-                    return true;
-                }
-                else
-                {
-                    if (index && tokens[tokenIndex] == "{")
-                    {
-                        tokenIndex++;
-                        if (COREBODY())
-                        {
-                            if (index && tokens[tokenIndex] == "}")
-                            {
-                                tokenIndex++;
-                                return true;
-                            }
-                        }
-                        tokenIndex--;
-                    }
-                }
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        bool DECLARATION()
+        bool AccessModifier()
         {
             if (index && tokens[tokenIndex] == "access-modifiers")
             {
                 tokenIndex++;
-                if (VARIABLEDECLARATION() || TASK() || CLASS() || STRUCTURE())
-                    return true;
-                tokenIndex++;
+                if (Declarations()) return true;
+                else return false;
             }
-
-            return false;
+            else return false;
         }
 
-        bool STRUCTURE()
+        bool Declarations()
+        {
+            int _tokenIndex = tokenIndex;
+            if (VariableDeclaration())
+                return true;
+            else if (tokenIndex == _tokenIndex && TaskDeclaration())
+                return true;
+            else if (tokenIndex == _tokenIndex && ClassDeclaration())
+                return true;
+            else if (tokenIndex == _tokenIndex && StructureDeclaration())
+                return true;
+            else return false;
+        }
+
+        bool StructureDeclaration()
         {
             if (index && tokens[tokenIndex] == "structure")
             {
@@ -161,7 +96,7 @@ namespace Compiler
                     if (index && tokens[tokenIndex] == "{")
                     {
                         tokenIndex++;
-                        if (STRUCTBODY())
+                        if (StructureBody())
                         {
                             if (index && tokens[tokenIndex] == "}")
                             {
@@ -171,34 +106,31 @@ namespace Compiler
                             else
                                 return false;
                         }
-                        tokenIndex--;
+                        else if (index && tokens[tokenIndex] == "}")
+                        {
+                                tokenIndex++;
+                                return true;
+                        }
+                        else return false;
                     }
-                    tokenIndex--;
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-
-            return false;
+            else return false;
         }
 
-        bool STRUCTBODY()
+        bool StructureBody()
         {
-            if (index && tokens[tokenIndex] == "access-modifiers")
-            {
-                tokenIndex++;
-                if (VARIABLEDECLARATION() || TASK())
-                    if (STRUCTBODY())
-                        return true;
-                tokenIndex--;
-            }
-            else if (VARIABLEDECLARATION() || TASK())
-                if (STRUCTBODY())
-                    return true;
-
-            return true;
+            int _tokenIndex = tokenIndex;
+            if (AccessModifier())
+                return StructureBody();
+            else if (tokenIndex == _tokenIndex && Declarations())
+                return StructureBody();
+            else return false;
         }
 
-        bool CLASS()
+        bool ClassDeclaration()
         {
             if (index && tokens[tokenIndex] == "class")
             {
@@ -209,7 +141,7 @@ namespace Compiler
                     if (index && tokens[tokenIndex] == "{")
                     {
                         tokenIndex++;
-                        if (CLASSBODY())
+                        if (ClassBody() || true)
                         {
                             if (index && tokens[tokenIndex] == "}")
                             {
@@ -219,199 +151,115 @@ namespace Compiler
                             else
                                 return false;
                         }
-                        tokenIndex--;
+                        else return false;
                     }
-                    tokenIndex--;
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-
-            return false;
+            else return false;
         }
 
-        bool CLASSBODY()
+        bool Commence()
+        {
+            if (index && tokens[tokenIndex] == "commence")
+            {
+                tokenIndex++;
+                if (index && tokens[tokenIndex] == "(")
+                {
+                    tokenIndex++;
+                    if (Parameters() || true)
+                    {
+                        if (index && tokens[tokenIndex] == ")")
+                        {
+                            tokenIndex++;
+                            if (index && tokens[tokenIndex] == "{")
+                            {
+                                tokenIndex++;
+                                if (InnerMostBody() || true)
+                                {
+                                    if (index && tokens[tokenIndex] == "}")
+                                    {
+                                        tokenIndex++;
+                                        return true;
+                                    }
+                                    else
+                                        return false;
+                                }
+                                else return false;
+                            }
+                            else return false;
+                        }
+                        else return false;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool ClassBody()
+        {
+            int _tokenIndex = tokenIndex;
+            if (AccessModifierClass())
+                return ClassBody();
+            else if (tokenIndex == _tokenIndex && DeclarationsClass())
+                return ClassBody();
+            else return false;
+        }
+
+        bool AccessModifierClass()
         {
             if (index && tokens[tokenIndex] == "access-modifiers")
             {
                 tokenIndex++;
-                if (VARIABLEDECLARATION() || TASK() || CLASS() || STRUCTURE() || COMMENCE())
-                    if (CLASSBODY())
-                        return true;
-                tokenIndex--;
+                if (DeclarationsClass()) return true;
+                else return false;
             }
-            else if (VARIABLEDECLARATION() || TASK() || CLASS() || STRUCTURE() || COMMENCE())
-                if (CLASSBODY())
-                    return true;
-
-            return true;
+            else return false;
         }
 
-        bool COMMENCE()
-        {
-            
-            if (index && tokens[tokenIndex] == "commence")
-            {
-                    tokenIndex++;
-                    if (index && tokens[tokenIndex] == "(")
-                    {
-                        tokenIndex++;
-                        if (PARAMS())
-                        {
-                            if (index && tokens[tokenIndex] == ")")
-                            {
-                                tokenIndex++;
-                                if (index && tokens[tokenIndex] == "{")
-                                {
-                                    tokenIndex++;
-                                    if (COREBODY())
-                                    {
-                                        if (index && tokens[tokenIndex] == "}")
-                                        {
-                                            tokenIndex++;
-                                            return true;
-                                        }
-                                        else
-                                            return false;
-                                    }
-                                    tokenIndex--;
-                                }
-                                tokenIndex--;
-                            }
-                        }
-                        tokenIndex--;
-                    }
-                    tokenIndex--;
-            }
-            return false;
-        }
-
-        /* VARIABLE DECLARATION */
-        bool VARIABLEDECLARATION()
+        bool DeclarationsClass()
         {
 
-            if (index && tokens[tokenIndex] == "variable")
-            {
-                tokenIndex++;
-                if (VAR2())
-                {
-                    return true;
-                }
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        bool VAR2()
-        {
-            if (index && tokens[tokenIndex] == "identifier")
-            {
-                tokenIndex++;
-                if (VAR3())
-                {
-                    if (VAR6())
-                    {
-                        return true;
-                    }
-                }
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        bool VAR3()
-        {
-            if (index && tokens[tokenIndex] == ":")
-            {
-                tokenIndex++;
-                if (index && tokens[tokenIndex] == "data-type")
-                {
-                    tokenIndex++;
-                    if (VAR5())
-                    {
-                        return true;
-                    }
-                    tokenIndex--;
-                }
-                tokenIndex--;
-            }
-
-            else if (VAR4())
-            {
+            int _tokenIndex = tokenIndex;
+            if (VariableDeclaration())
                 return true;
-            }
-
-            return false;
-        }
-
-        bool VAR4()
-        {
-            if (index && tokens[tokenIndex] == "=")
-            {
-                tokenIndex++;
-                if (INITIATION())
-                {
-                    return true;
-                }
-                else if (index && (Identifier() || Constant() || Expression()))
-                {
-                    tokenIndex++;
-                    return true;
-                }
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        bool VAR5()
-        {
-            if (VAR4())
-            {
+            else if (tokenIndex == _tokenIndex && TaskDeclaration())
                 return true;
-            }
-            return true;
+            else if (tokenIndex == _tokenIndex && ClassDeclaration())
+                return true;
+            else if (tokenIndex == _tokenIndex && StructureDeclaration())
+                return true;
+            else if (tokenIndex == _tokenIndex && Commence())
+                return true;
+            else return false;
+
         }
 
-        bool VAR6()
-        {
-            if (index && tokens[tokenIndex] == ",")
-            {
-                tokenIndex++;
-                if (VAR2())
-                    return true;
-                tokenIndex--;
-            }
-
-            return true;
-        }
-
-        /* ENDING */
-
-        /* FUNCTON DECLARATION*/
-        bool TASK()
-        {
+        bool TaskDeclaration()
+        { 
             if (index && tokens[tokenIndex] == "task")
             {
                 tokenIndex++;
-                if (index && Identifier())
+                if (index && tokens[tokenIndex] == "identifier")
                 {
                     tokenIndex++;
                     if (index && tokens[tokenIndex] == "(")
                     {
                         tokenIndex++;
-                        if (PARAMS())
+                        if (Parameters() || true)
                         {
                             if (index && tokens[tokenIndex] == ")")
                             {
                                 tokenIndex++;
-                                if (RETURNS())
+                                if (Returns() || true)
                                 {
                                     if (index && tokens[tokenIndex] == "{")
                                     {
                                         tokenIndex++;
-                                        if (COREBODY())
+                                        if (InnerMostBody() || true)
                                         {
                                             if (index && tokens[tokenIndex] == "}")
                                             {
@@ -421,62 +269,55 @@ namespace Compiler
                                             else
                                                 return false;
                                         }
-                                        tokenIndex--;
+                                        else return false;
                                     }
+                                    else return false;
                                 }
-                                tokenIndex--;
+                                else return false;
                             }
+                            else return false;
                         }
-                        tokenIndex--;
+                        else return false;
                     }
-                    tokenIndex--;
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-
-            return false;
+            else return false;
         }
 
-        bool COREBODY()
-        {
-            if (VARIABLEDECLARATION() || TASK() || ASSIGNMENT() || LOOPS() || UNARY() || OBJMETHODS() || OBJPROPERTIES() || WHENEVER())
-            {
-                if (COREBODY())
-                    return true;
-            }
-
-            return true;
-        }
-
-        bool RETURNS()
+        bool Returns()
         {
             if (index && tokens[tokenIndex] == "returns")
             {
                 tokenIndex++;
-                if (index && tokens[tokenIndex] == "data-type")
+                if (index && (tokens[tokenIndex] == "identifier" || tokens[tokenIndex] == "data-type"))
                 {
                     tokenIndex++;
                     return true;
                 }
                 tokenIndex--;
             }
-            return true;
+            return false;
         }
 
-        bool PARAMS()
+        bool Parameters()
         {
-            if (PARAM())
+            if (Parameter())
             {
-                if (PARAM2())
+                if (index && tokens[tokenIndex] == ",")
                 {
-                    return true;
+                    tokenIndex++;
+                    if (Parameters())
+                        return true;
+                    else return false;
                 }
+                else return true;
             }
-
-            return true;
+            else return false;
         }
 
-        bool PARAM()
+        bool Parameter()
         {
             if (index && tokens[tokenIndex] == "identifier")
             {
@@ -484,123 +325,371 @@ namespace Compiler
                 if (index && tokens[tokenIndex] == ":")
                 {
                     tokenIndex++;
-                    if (index && tokens[tokenIndex] == "data-type")
+                    if (index && (tokens[tokenIndex] == "identifier" || tokens[tokenIndex] == "data-type"))
                     {
                         tokenIndex++;
                         return true;
                     }
-                    tokenIndex--;
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-
-            return false;
+            else return false;
         }
 
-        bool PARAM2()
+        bool InnerMostBody()
         {
-            if (index && tokens[tokenIndex] == ",")
+            int _tokenIndex = tokenIndex;
+            if (VariableDeclaration())
+                return InnerMostBody();
+            else if (tokenIndex == _tokenIndex && Whenever())
+                return InnerMostBody();
+            else if (tokenIndex == _tokenIndex && Loops())
+                return InnerMostBody();
+            else if (tokenIndex == _tokenIndex && Assignment())
+                return InnerMostBody();
+            else return false;
+
+        }
+
+        bool VariableDeclaration()
+        {
+            if (index && tokens[tokenIndex] == "variable")
             {
                 tokenIndex++;
-                if (PARAM())
+                if (VariableDeclaration_())
+                    return true;
+                else return false;
+            }
+            else return false;
+        }
+
+        bool VariableDeclaration_()
+        {
+            if (index && tokens[tokenIndex] == "identifier")
+            {
+                tokenIndex++;
+                if (VariableDeclaration__())
                 {
-                    if (PARAM2())
-                        return true;
+                    if (index && tokens[tokenIndex] == ",")
+                    {
+                        tokenIndex++;
+                        if (VariableDeclaration_())
+                            return true;
+                        else return false;
+                    }
+                    else return true;
                 }
-                tokenIndex--;
+                else return false;
             }
-
-            return true;
+            else return false;
         }
 
-        /* ENDING*/
-
-        /* LOOPS */
-        bool LOOPS()
+        bool VariableDeclaration__()
         {
-            return (CONSIDERING() || TILL() || REPEAT() || ARRAYIN());
-        }
-
-        bool ARRAYIN()
-        {
-            if (index && Identifier())
+            if (index && tokens[tokenIndex] == ":")
             {
                 tokenIndex++;
-                if (index && tokens[tokenIndex] == "in")
+                if (index && (tokens[tokenIndex] == "identifier" || tokens[tokenIndex] == "data-type"))
                 {
                     tokenIndex++;
-                    if (index && Constant())
-                    {
-                        tokenIndex++;
-                        if (index && tokens[tokenIndex] == "{")
-                        {
-                            tokenIndex++;
-                            if (COREBODY())
-                            {
-                                if (index && tokens[tokenIndex] == "}")
-                                {
-                                    tokenIndex++;
-                                    return true;
-                                }
-                                else
-                                    return false;
-                            }
-                            tokenIndex--;
-                        }
-                        tokenIndex--;
-                    }
-                    tokenIndex--;
+                    if (VariableDeclaration___())
+                        return true;
+                    else return true;
                 }
-                tokenIndex--;
+                else return false;
             }
-            return false;
+            else if (VariableDeclaration___())
+                return true;
+            else return false;
         }
 
-        bool CONSIDERING()
+        bool VariableDeclaration___()
+        {
+            if (index && tokens[tokenIndex] == "=")
+            {
+                tokenIndex++;
+                if (AfterAssignment_())
+                    return true;
+                else if (Constant())
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else if (Expression())
+                    return true;
+                else return false;
+            }
+            else return false;
+        }
+
+        bool AfterAssignment_()
+        {
+            if (AfterAssignmentID_())
+                return true;
+            else if (Constant())
+            {
+                tokenIndex++;
+                return true;
+            }
+            else if (Expression())
+                return true;
+            else return false;
+        }
+
+        bool AfterAssignmentID_()
+        {
+            if (index && tokens[tokenIndex] == "identifier")
+            {
+                tokenIndex++;
+                if (Identifier_())
+                    return true;
+                else return true;
+            }
+            else return false;
+        }
+
+        bool Identifier_()
+        {
+            if (index && tokens[tokenIndex] == ".")
+            {
+                tokenIndex++;
+                if (AfterAssignmentID_())
+                    return true;
+                else return false;
+            }
+            else if (index && tokens[tokenIndex] == "(")
+            {
+                tokenIndex++;
+                if (Passables())
+                {
+                    if (index && tokens[tokenIndex] == ")")
+                    {
+                        tokenIndex++;
+                        return true;
+                    }
+                    else return false;
+                }
+                else if (index && tokens[tokenIndex] == ")")
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool Passables()
+        {
+            if (index)
+            {
+                if (AfterAssignmentID_())
+                {
+                    if (index && tokens[tokenIndex] == ",")
+                    {
+                        tokenIndex++;
+                        if (Passables())
+                            return true;
+                        else return false;
+                    }
+                    else return true;
+                }
+                else if (Constant())
+                {
+                    tokenIndex++;
+                    if (index && tokens[tokenIndex] == ",")
+                    {
+                        tokenIndex++;
+                        if (Passables())
+                            return true;
+                        return false;
+                    }
+                    else return true;
+                }
+                else if (Expression())
+                {
+                    if (index && tokens[tokenIndex] == ",")
+                    {
+                        tokenIndex++;
+                        if (Passables())
+                            return true;
+                        else return false;
+                    }
+                    else return true;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool Whenever()
+        {
+            if (index && tokens[tokenIndex] == "whenever")
+            {
+                tokenIndex++;
+                if (Condition())
+                {
+                    if (index && tokens[tokenIndex] == "{")
+                    {
+                        tokenIndex++;
+                        if (InnerMostBody() || true)
+                        {
+                            if (index && tokens[tokenIndex] == "}")
+                            {
+                                tokenIndex++;
+                                if (Else() || true)
+                                    return true;
+                                else return false;
+                            }
+                            else return false;
+                        }
+                        else return false;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool Else()
+        {
+            if (index && tokens[tokenIndex] == "else")
+            {
+                tokenIndex++;
+                if (Whenever())
+                    return true;
+                else if (index && tokens[tokenIndex] == "{")
+                {
+                    tokenIndex++;
+                    if (InnerMostBody() || true)
+                    {
+                        if (index && tokens[tokenIndex] == "}")
+                        {
+                            tokenIndex++;
+                            return true;
+                        }
+                        else return false;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool Condition()
+        {
+            if (AfterAssignment_())
+                return true;
+            else if (Constant())
+            {
+                tokenIndex++;
+                return true;
+            }
+            else if (Expression())
+                return true;
+            else return false;
+        }
+
+        bool Loops()
+        {
+            return (Considering() || Repeat() || Till());
+        }
+
+        bool Considering()
         {
             if (index && tokens[tokenIndex] == "considering")
             {
                 tokenIndex++;
-                if (VARIABLEDECLARATION() || true)
+                if (VariableDeclaration() || true)
                 {
                     if (index && tokens[tokenIndex] == ";")
                     {
                         tokenIndex++;
-                        if (CONDITION() || true)
+                        if (Condition() || true)
                         {
                             if (index && tokens[tokenIndex] == ";")
                             {
                                 tokenIndex++;
-                                if (ASSIGNMENT() || UNARY() || true)
+                                if (Assignment() || true)
                                 {
                                     if (index && tokens[tokenIndex] == "{")
                                     {
                                         tokenIndex++;
-                                        if (COREBODY())
+                                        if (InnerMostBody() || true)
                                         {
                                             if (index && tokens[tokenIndex] == "}")
                                             {
                                                 tokenIndex++;
                                                 return true;
                                             }
-                                            else
-                                                return false;
+                                            else return false;
                                         }
-                                        tokenIndex--;
+                                        else return false;
                                     }
+                                    else return false;
                                 }
-                                tokenIndex--;
+                                else return false;
                             }
+                            else return false;
                         }
-                        tokenIndex--;
+                        else return false;
                     }
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-            return false;
+            else return false;
         }
 
-        bool REPEAT()
+        bool Assignment()
+        {
+            if (BeforeAssignmentID_())
+            {
+                if (index && (tokens[tokenIndex] == "=" || tokens[tokenIndex] == "assignment-operators"))
+                {
+                    tokenIndex++;
+                    if (AfterAssignment_())
+                        return true;
+                    else return false;
+                }
+                else if (index && tokens[tokenIndex] == "unary-operators")
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool BeforeAssignmentID_()
+        {
+            if (index && tokens[tokenIndex] == "identifier")
+            {
+                tokenIndex++;
+                if (Identifier__())
+                    return true;
+                else return true;
+            }
+            else return false;
+        }
+
+        bool Identifier__()
+        {
+            if (index && tokens[tokenIndex] == ".")
+            {
+                tokenIndex++;
+                if (BeforeAssignmentID_())
+                    return true;
+                else return false;
+            }
+            else return false;
+        }
+
+        bool Repeat()
         {
             if (index && tokens[tokenIndex] == "repeat")
             {
@@ -608,7 +697,7 @@ namespace Compiler
                 if (index && tokens[tokenIndex] == "{")
                 {
                     tokenIndex++;
-                    if (COREBODY())
+                    if (InnerMostBody() || true)
                     {
                         if (index && tokens[tokenIndex] == "}")
                         {
@@ -616,34 +705,35 @@ namespace Compiler
                             if (index && tokens[tokenIndex] == "till")
                             {
                                 tokenIndex++;
-                                if (CONDITION())
+                                if (Condition())
                                 {
                                     return true;
                                 }
-                                tokenIndex--;
+                                else return false;
                             }
+                            else return false;
                         }
                         else
                             return false;
                     }
-                    tokenIndex--;
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-            return false;
+            else return false;
         }
 
-        bool TILL()
+        bool Till()
         {
             if (index && tokens[tokenIndex] == "till")
             {
                 tokenIndex++;
-                if (CONDITION())
+                if (Condition())
                 {
                     if (index && tokens[tokenIndex] == "{")
                     {
                         tokenIndex++;
-                        if (COREBODY())
+                        if (InnerMostBody() || true)
                         {
                             if (index && tokens[tokenIndex] == "}")
                             {
@@ -653,209 +743,22 @@ namespace Compiler
                             else
                                 return false;
                         }
-                        tokenIndex--;
+                        else return false;
                     }
+                    else return false;
                 }
-                tokenIndex--;
+                else return false;
             }
-
-            return false;
+            else return false;
         }
 
-        bool CONDITION()
+        bool index
         {
-            if (index && (Identifier() || Constant() || Expression()))
+            get
             {
-                tokenIndex++;
-                return true;
+                return tokenIndex < tokens.Length;
             }
-
-            return false;
         }
-
-        /* ENDING */
-
-        /* ASSIGNMENTS */
-        bool UNARY()
-        {
-            if (index && tokens[tokenIndex] == "identifier")
-            {
-                tokenIndex++;
-                if (index && tokens[tokenIndex] == "unary-operators")
-                {
-                    tokenIndex++;
-                    return true;
-                }
-                tokenIndex--;
-            }
-            return false;
-        }
-
-        bool ASSIGNMENT()
-        {
-            if (index && tokens[tokenIndex] == "identifier")
-            {
-                tokenIndex++;
-                if (index && (tokens[tokenIndex] == "=" || tokens[tokenIndex] == "assignment-operators"))
-                {
-                    tokenIndex++;
-                    if (Identifier() || Constant() || Expression() || INITIATION())
-                    {
-                        tokenIndex++;
-                        return true;
-                    }
-                    tokenIndex--;
-                }
-
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        /* ENDING */
-
-        /* OBJECT'S METHOD AND PROPERTIES ACCESSING */
-        bool OBJPROPERTIES()
-        {
-            if (OBJVAR())
-            {
-                if (index && (tokens[tokenIndex] == "=" || tokens[tokenIndex] == "assignment-operators"))
-                {
-                    tokenIndex++;
-                    if (INITIATION() || Identifier() || Constant() || Expression())
-                    {
-                        tokenIndex++;
-                        return true;
-                    }
-                    tokenIndex--;
-                }
-                else return true;
-            }
-            return false;
-        }
-
-        bool OBJMETHODS()
-        {
-            if (OBJVAR())
-            {
-                if (index && tokens[tokenIndex] == "(")
-                {
-                    tokenIndex++;
-                    if (PASSABLE())
-                    {
-                        if (index && tokens[tokenIndex] == ")")
-                        {
-                            tokenIndex++;
-                            return true;
-                        }
-                    }
-                    tokenIndex--;
-                }
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        /* ENDING */
-
-        bool INITIATION()
-        {
-            if (index && Identifier())
-            {
-                tokenIndex++;
-                if (index && tokens[tokenIndex] == "(")
-                {
-                    tokenIndex++;
-                    if (PASSABLE())
-                    {
-                        if (index && tokens[tokenIndex] == ")")
-                        {
-                            tokenIndex++;
-                            return true;
-                        }
-                    }
-                    tokenIndex--;
-                }
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        bool TASKCALL()
-        {
-            if (index && Identifier())
-            {
-                tokenIndex++;
-                if (index && tokens[tokenIndex] == "(")
-                {
-                    tokenIndex++;
-                    if (PASSABLE())
-                    {
-                        if (index && tokens[tokenIndex] == ")")
-                        {
-                            tokenIndex++;
-                            return true;
-                        }
-                    }
-                    tokenIndex--;
-                }
-                tokenIndex--;
-            }
-            return false;
-        }
-
-        bool OBJVAR()
-        {
-            if (index && Identifier())
-            {
-                tokenIndex++;
-                if (OBJVAR2())
-                    return true;
-                tokenIndex--;
-            }
-
-            return false;
-        }
-
-        bool OBJVAR2()
-        {
-            if (index && tokens[tokenIndex] == ".")
-            {
-                tokenIndex++;
-                if (index && Identifier())
-                {
-                    tokenIndex++;
-                    if (OBJVAR2())
-                    {
-                        return true;
-                    }
-                    else return true;
-                }
-                tokenIndex--;
-            }
-            return true;
-        }
-
-        bool PASSABLE()
-        {
-            if (index && (Identifier() || Constant() || Expression()))
-            {
-                tokenIndex++;
-                if (index && tokens[tokenIndex] == ",")
-                {
-                    tokenIndex++;
-                    if (PASSABLE())
-                        return true;
-                }
-                else return true;
-            }
-
-            return true;
-        }
-
         bool Expression()
         {
             return false;
@@ -866,25 +769,9 @@ namespace Compiler
             return (
                 tokens[tokenIndex] == "integer-constant" ||
                 tokens[tokenIndex] == "float-constant" ||
-                tokens[tokenIndex] == "char-constant" ||
+                tokens[tokenIndex] == "character-constant" ||
                 tokens[tokenIndex] == "string-constant"
                 );
         }
-        bool AccessModifier()
-        {
-            return (tokens[tokenIndex] == "access-modifiers");
-        }
-
-        bool Variable()
-        {
-            return (tokens[tokenIndex] == "variable");
-        }
-
-        bool Identifier()
-        {
-            return (tokens[tokenIndex] == "identifier");
-        }
-
-
     }
 }
