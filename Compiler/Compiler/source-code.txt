@@ -1,15 +1,1 @@
-task x (x:[Float]) returns [Int] {
-var a: Int ='a'
-
-
-}
-class asb{
-
-public commence(ab:Int, gh:Char,g:String )
-
-{
 x.func ("asas",12.21)
-}
-
-
-}

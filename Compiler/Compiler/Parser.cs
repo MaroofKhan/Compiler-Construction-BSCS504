@@ -661,6 +661,21 @@ namespace Compiler
                     tokenIndex++;
                     return true;
                 }
+
+                else if (index && tokens[tokenIndex] == "(")
+                {
+                    tokenIndex++;
+                    if (Passables())
+                    {
+                        if (index && tokens[tokenIndex] == ")")
+                        {
+                            tokenIndex++;
+                            return true;
+                        }
+                        else return false;
+                    }
+                    else return false;
+                }
                 else return false;
             }
             else return false;
