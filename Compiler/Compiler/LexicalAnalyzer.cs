@@ -119,6 +119,8 @@ namespace Compiler
                                     continue;
                             }
 
+                            if (SingleLineComment) continue;
+
                             if (Language.isPunctuator(letter))
                             {
                                 switch (letter)
@@ -212,7 +214,7 @@ namespace Compiler
                                         }
                                         else
                                         {
-                                            Token _token = new Token(letter, (lineCount + 1));
+                                            Token _token = new Token(ClassPart.classPart(letter.ToString()), letter.ToString(), (lineCount + 1));
                                             tokens.Add(_token);
                                         }
                                         break;

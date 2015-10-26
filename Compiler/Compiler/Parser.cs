@@ -259,7 +259,7 @@ namespace Compiler
                                     if (index && tokens[tokenIndex] == "{")
                                     {
                                         tokenIndex++;
-                                        if (InnerMostBody() || true)
+                                        if (TaskBody() || true)
                                         {
                                             if (index && tokens[tokenIndex] == "}")
                                             {
@@ -367,6 +367,34 @@ namespace Compiler
             else return false;
         }
 
+        bool TaskBody()
+        {
+            int _tokenIndex = tokenIndex;
+            if (VariableDeclaration())
+                return TaskBody();
+            else if (tokenIndex == _tokenIndex && Whenever())
+                return TaskBody();
+            else if (tokenIndex == _tokenIndex && Loops())
+                return TaskBody();
+            else if (tokenIndex == _tokenIndex && Return())
+                return TaskBody();
+            else if (tokenIndex == _tokenIndex && Assignment())
+                return TaskBody();
+            else return false;
+        }
+
+        bool Return()
+        {
+            if (index && tokens[tokenIndex] == "return")
+            {
+                tokenIndex++;
+                if (AfterAssignment_())
+                    return true;
+                else return false;
+            }
+            else return false;
+        }
+
         bool InnerMostBody()
         {
             int _tokenIndex = tokenIndex;
@@ -451,7 +479,7 @@ namespace Compiler
 
         bool VariableDeclaration___()
         {
-            if (index && tokens[tokenIndex] == "=")
+            if (index && tokens[tokenIndex] == "direct-assignment-operators")
             {
                 tokenIndex++;
                 if (Expression())
@@ -505,6 +533,21 @@ namespace Compiler
                 {
                     tokenIndex++;
                     return true;
+                }
+                else return false;
+            }
+            else if (index && tokens[tokenIndex] == "[")
+            {
+                tokenIndex++;
+                if (index && (tokens[tokenIndex] == "integer-constant" || tokens[tokenIndex] == "identifier"))
+                {
+                    tokenIndex++;
+                    if (index && tokens[tokenIndex] == "]")
+                    {
+                        tokenIndex++;
+                        return true;
+                    }
+                    else return false;
                 }
                 else return false;
             }
@@ -649,7 +692,7 @@ namespace Compiler
         {
             if (BeforeAssignmentID_())
             {
-                if (index && (tokens[tokenIndex] == "=" || tokens[tokenIndex] == "assignment-operators"))
+                if (index && (tokens[tokenIndex] == "direct-assignment-operators" || tokens[tokenIndex] == "assignment-operators"))
                 {
                     tokenIndex++;
                     if (AfterAssignment_())
@@ -661,7 +704,6 @@ namespace Compiler
                     tokenIndex++;
                     return true;
                 }
-
                 else if (index && tokens[tokenIndex] == "(")
                 {
                     tokenIndex++;
@@ -702,6 +744,23 @@ namespace Compiler
                     return true;
                 else return false;
             }
+            else if (index && tokens[tokenIndex] == "[")
+            {
+                tokenIndex++;
+                if (index && (tokens[tokenIndex] == "integer-constant" || tokens[tokenIndex] == "identifier"))
+                {
+                    tokenIndex++;
+                    if (index && tokens[tokenIndex] == "]")
+                    {
+                        tokenIndex++;
+                        if (BeforeAssignmentID_())
+                            return true;
+                        else return false;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
             else return false;
         }
 
@@ -722,9 +781,7 @@ namespace Compiler
                             {
                                 tokenIndex++;
                                 if (Condition())
-                                {
                                     return true;
-                                }
                                 else return false;
                             }
                             else return false;
@@ -785,9 +842,7 @@ namespace Compiler
             if (AE())
             {
                 if (OE2())
-                {
                     return true;
-                }
                 else return false;
             }
             else return false;
@@ -803,9 +858,7 @@ namespace Compiler
                 if (AE())
                 {
                     if (OE2())
-                    {
                         return true;
-                    }
                     else return false;
                 }
                 else return false;
@@ -818,9 +871,7 @@ namespace Compiler
             if (ROP())
             {
                 if (AE2())
-                {
                     return true;
-                }
                 else return false;
             }
             else return false;

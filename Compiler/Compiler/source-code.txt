@@ -1,1 +1,10 @@
-x.func ("asas",12.21)
+task sum (array:[Int]) returns Int {
+var i = 0
+var sum = 0
+till (i < array.count) {
+sum += array[i]
+array[i] = 0
+i++
+}
+return sum
+}

@@ -78,6 +78,11 @@ namespace Compiler
 
         public
         static
+        ClassPart DirectAssignmentOperators = new ClassPart("direct-assignment-operators", new string[] { "=" });
+
+
+        public
+        static
         ClassPart SimpleArithmeticOperators = new ClassPart("simple-arithmetic-operators", new string[] { "+", "-" });
 
         public
@@ -116,6 +121,7 @@ namespace Compiler
             Returns,
             RelationalOperators,
             AssignmentOperators,
+            DirectAssignmentOperators,
             SimpleArithmeticOperators,
             ArithmeticOperators,
             LogicalOperatorOR,
