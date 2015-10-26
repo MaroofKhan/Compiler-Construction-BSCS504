@@ -933,7 +933,8 @@ namespace Compiler
                 tokens[tokenIndex] == "integer-constant" ||
                 tokens[tokenIndex] == "float-constant" ||
                 tokens[tokenIndex] == "character-constant" ||
-                tokens[tokenIndex] == "string-constant"
+                tokens[tokenIndex] == "string-constant" ||
+                tokens[tokenIndex] == "integer-array-constant"
                 );
         }
     }
