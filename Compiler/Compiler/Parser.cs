@@ -296,9 +296,24 @@ namespace Compiler
                     tokenIndex++;
                     return true;
                 }
-                tokenIndex--;
+                else if (index && (tokens[tokenIndex] == "["))
+                {
+                    tokenIndex++;
+                    if (index && (tokens[tokenIndex] == "identifier" || tokens[tokenIndex] == "data-type"))
+                    {
+                        tokenIndex++;
+                        if (index && (tokens[tokenIndex] == "]"))
+                        {
+                            tokenIndex++;
+                            return true;
+                        }
+                        else return false;
+                    }
+                    else return false;
+                }
+                else return false;
             }
-            return false;
+            else return false;
         }
 
         bool Parameters()
@@ -329,6 +344,21 @@ namespace Compiler
                     {
                         tokenIndex++;
                         return true;
+                    }
+                    else if (index && (tokens[tokenIndex] == "["))
+                    {
+                        tokenIndex++;
+                        if (index && (tokens[tokenIndex] == "identifier" || tokens[tokenIndex] == "data-type"))
+                        {
+                            tokenIndex++;
+                            if (index && (tokens[tokenIndex] == "]"))
+                            {
+                                tokenIndex++;
+                                return true;
+                            }
+                            else return false;
+                        }
+                        else return false;
                     }
                     else return false;
                 }
@@ -399,6 +429,21 @@ namespace Compiler
                 }
                 else return false;
             }
+            else if (index && (tokens[tokenIndex] == "["))
+            {
+                tokenIndex++;
+                if (index && (tokens[tokenIndex] == "identifier" || tokens[tokenIndex] == "data-type"))
+                {
+                    tokenIndex++;
+                    if (index && (tokens[tokenIndex] == "]"))
+                    {
+                        tokenIndex++;
+                        return true;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
             else if (VariableDeclaration___())
                 return true;
             else return false;
@@ -409,14 +454,7 @@ namespace Compiler
             if (index && tokens[tokenIndex] == "=")
             {
                 tokenIndex++;
-                if (AfterAssignment_())
-                    return true;
-                else if (Constant())
-                {
-                    tokenIndex++;
-                    return true;
-                }
-                else if (Expression())
+                if (Expression())
                     return true;
                 else return false;
             }
@@ -425,14 +463,7 @@ namespace Compiler
 
         bool AfterAssignment_()
         {
-            if (AfterAssignmentID_())
-                return true;
-            else if (Constant())
-            {
-                tokenIndex++;
-                return true;
-            }
-            else if (Expression())
+             if (Expression())
                 return true;
             else return false;
         }
@@ -484,30 +515,7 @@ namespace Compiler
         {
             if (index)
             {
-                if (AfterAssignmentID_())
-                {
-                    if (index && tokens[tokenIndex] == ",")
-                    {
-                        tokenIndex++;
-                        if (Passables())
-                            return true;
-                        else return false;
-                    }
-                    else return true;
-                }
-                else if (Constant())
-                {
-                    tokenIndex++;
-                    if (index && tokens[tokenIndex] == ",")
-                    {
-                        tokenIndex++;
-                        if (Passables())
-                            return true;
-                        return false;
-                    }
-                    else return true;
-                }
-                else if (Expression())
+                if (Expression())
                 {
                     if (index && tokens[tokenIndex] == ",")
                     {
@@ -581,14 +589,7 @@ namespace Compiler
 
         bool Condition()
         {
-            if (AfterAssignment_())
-                return true;
-            else if (Constant())
-            {
-                tokenIndex++;
-                return true;
-            }
-            else if (Expression())
+            if (Expression())
                 return true;
             else return false;
         }
@@ -761,7 +762,169 @@ namespace Compiler
         }
         bool Expression()
         {
-            return false;
+            return F();
+        }
+
+        bool OE()
+        {
+            if (AE())
+            {
+                if (OE2())
+                {
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+
+
+        bool OE2()
+        {
+            if (index && tokens[tokenIndex] == "logical-operator-OR")
+            {
+                tokenIndex++;
+                if (AE())
+                {
+                    if (OE2())
+                    {
+                        return true;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else return true;
+        }
+
+        bool AE()
+        {
+            if (ROP())
+            {
+                if (AE2())
+                {
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        bool AE2()
+        {
+            if (index && tokens[tokenIndex] == "logical-operator-AND")
+            {
+                tokenIndex++;
+                if (ROP())
+                    if (AE2())
+                        return true;
+                    else return false;
+                else return false;
+            }
+            else return true;
+        }
+
+        bool ROP()
+        {
+            if (E())
+                if (ROP2())
+                    return true;
+                else return false;
+            else return false;
+        }
+
+        bool ROP2()
+        {
+            if (index && tokens[tokenIndex] == "relational-operators")
+            {
+                tokenIndex++;
+                if (E())
+                    if (ROP2())
+                        return true;
+                    else return false;
+                else return false;
+            }
+            else return true;
+        }
+
+        bool E()
+        {
+            if (T())
+                if (E2())
+                    return true;
+                else return false;
+            else return false;
+        }
+
+        bool E2()
+        {
+            if (index && tokens[tokenIndex] == "simple-arithmetic-operators")
+            {
+                tokenIndex++;
+                if (T())
+                    if (E2())
+                        return true;
+                    else return false;
+                else return false;
+            }
+            else return true;
+        }
+
+        bool T()
+        {
+            if (F())
+                if (T2())
+                    return true;
+                else return false;
+            else return false;
+        }
+
+        bool T2()
+        {
+            if (index && tokens[tokenIndex] == "arithmetic-operators")
+            {
+                tokenIndex++;
+                if (F())
+                    if (T2())
+                        return true;
+                    else return false;
+                else return false;
+            }
+            else return true;
+        }
+
+        bool F()
+        {
+            if (index && tokens[tokenIndex] == "(")
+            {
+                tokenIndex++;
+                if (OE())
+                {
+                    if (index && tokens[tokenIndex] == ")")
+                    {
+                        tokenIndex++;
+                        return true;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else if (index && tokens[tokenIndex] == "!")
+            {
+                tokenIndex++;
+                if (F())
+                    return true;
+                else return false;
+            }
+            else if (AfterAssignmentID_())
+                return true;
+            else if (index && Constant())
+            {
+                tokenIndex++;
+                return true;
+            }
+            else return false;
         }
 
         bool Constant()

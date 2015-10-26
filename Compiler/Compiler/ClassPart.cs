@@ -86,7 +86,11 @@ namespace Compiler
 
         public
         static
-        ClassPart LogicalOperators = new ClassPart("logical-operators", new string[] { "&&", "||" });
+        ClassPart LogicalOperatorOR = new ClassPart("logical-operator-OR", new string[] { "||" });
+
+        public
+        static
+        ClassPart LogicalOperatorAND = new ClassPart("logical-operator-AND", new string[] { "&&" });
 
         public
         static
@@ -114,7 +118,8 @@ namespace Compiler
             AssignmentOperators,
             SimpleArithmeticOperators,
             ArithmeticOperators,
-            LogicalOperators,
+            LogicalOperatorOR,
+            LogicalOperatorAND,
             UnaryOperators
         };
 

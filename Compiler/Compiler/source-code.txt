@@ -1,4 +1,15 @@
-class Y {
+task x (x:[Float]) returns [Int] {
+var a: Int ='a'
+
+
 }
-class X {
-x=0.0
+class asb{
+
+public commence(ab:Int, gh:Char,g:String )
+
+{
+x.func ("asas",12.21)
+}
+
+
+}
