@@ -3,8 +3,11 @@ var i = 0
 var sum = 0
 till (i < array.count) {
 sum += array[i]
-array[i] = 0
+array[--i] = i++
+array[i--]=array[0]
 i++
 }
 return sum
 }
+
+var x = i++, x: Int, x=0.0, u=.0, z=--x

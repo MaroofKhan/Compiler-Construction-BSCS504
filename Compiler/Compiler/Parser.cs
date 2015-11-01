@@ -18,7 +18,8 @@ namespace Compiler
         string[] tokens;
         int tokenIndex;
 
-        public Parser(Token[] tokenSet)
+
+        private Parser(Token[] tokenSet)
         {
             this.tokenSet = tokenSet;
             List<string> tokens = new List<string>();
@@ -37,6 +38,11 @@ namespace Compiler
 
         bool Start()
         {
+            if (index && tokens[tokenIndex] == "line-break")
+            {
+                tokenIndex++;
+                return Start();
+            }
 
             if (tokenIndex < tokens.Length)
                 if (GlobalBody())
@@ -482,7 +488,7 @@ namespace Compiler
             if (index && tokens[tokenIndex] == "direct-assignment-operators")
             {
                 tokenIndex++;
-                if (Expression())
+                if (AfterAssignment_())
                     return true;
                 else return false;
             }
@@ -501,9 +507,24 @@ namespace Compiler
             if (index && tokens[tokenIndex] == "identifier")
             {
                 tokenIndex++;
-                if (Identifier_())
+                if (index && tokens[tokenIndex] == "unary-operators")
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else if (Identifier_())
                     return true;
                 else return true;
+            }
+            else if (index && tokens[tokenIndex] == "unary-operators")
+            {
+                tokenIndex++;
+                if (index && tokens[tokenIndex] == "identifier")
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else return false;
             }
             else return false;
         }
@@ -539,9 +560,18 @@ namespace Compiler
             else if (index && tokens[tokenIndex] == "[")
             {
                 tokenIndex++;
-                if (index && (tokens[tokenIndex] == "integer-constant" || tokens[tokenIndex] == "identifier"))
+                if (index && (tokens[tokenIndex] == "integer-constant"))
                 {
                     tokenIndex++;
+                    if (index && tokens[tokenIndex] == "]")
+                    {
+                        tokenIndex++;
+                        return true;
+                    }
+                    else return false;
+                }
+                else if (AfterAssignmentID_())
+                {
                     if (index && tokens[tokenIndex] == "]")
                     {
                         tokenIndex++;
@@ -728,9 +758,24 @@ namespace Compiler
             if (index && tokens[tokenIndex] == "identifier")
             {
                 tokenIndex++;
-                if (Identifier__())
+                if (index && tokens[tokenIndex] == "unary-operators")
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else if (Identifier__())
                     return true;
                 else return true;
+            }
+            else if (index && tokens[tokenIndex] == "unary-operators")
+            {
+                tokenIndex++;
+                if (index && tokens[tokenIndex] == "identifier")
+                {
+                    tokenIndex++;
+                    return true;
+                }
+                else return false;
             }
             else return false;
         }
@@ -747,7 +792,7 @@ namespace Compiler
             else if (index && tokens[tokenIndex] == "[")
             {
                 tokenIndex++;
-                if (index && (tokens[tokenIndex] == "integer-constant" || tokens[tokenIndex] == "identifier"))
+                if (AfterAssignmentID_())
                 {
                     tokenIndex++;
                     if (index && tokens[tokenIndex] == "]")

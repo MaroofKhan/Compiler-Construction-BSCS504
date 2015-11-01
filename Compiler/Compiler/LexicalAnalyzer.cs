@@ -492,6 +492,10 @@ namespace Compiler
                         tokens.Add(token);
                     }
                 }
+                
+                //Token lineBreak = new Token(new ClassPart("line-break", new string[] {}), "", (lineCount + 1));
+                //tokens.Add(lineBreak);
+                
             }
             
             Token[] array = tokens.ToArray();
