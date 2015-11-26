@@ -20,8 +20,8 @@ namespace Compiler
 
         public int analyze()
         {
-            Parser.SetUpMainParser(tokenSet);
-            return Parser.MainParser.parse();
+            int tokenIndex = SyntaxTree.MainSyntaxTree.analyze(tokenSet);
+            return tokenIndex;
         }
     }
 }

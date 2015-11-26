@@ -26,7 +26,7 @@ namespace Compiler
 
         public
         static
-        ClassPart AccessModifiers = new ClassPart("access-modifiers", new string[] { "public", "private", "internal" });
+        ClassPart AccessModifiers = new ClassPart("access-modifier", new string[] { "public", "private", "internal" });
 
         public
         static
@@ -70,24 +70,24 @@ namespace Compiler
 
         public
         static
-        ClassPart RelationalOperators = new ClassPart("relational-operators", new string[] { "<", ">", "<=", ">=", "!=", "!", "==" });
+        ClassPart RelationalOperators = new ClassPart("relational-operator", new string[] { "<", ">", "<=", ">=", "!=", "!", "==" });
 
         public
         static
-        ClassPart AssignmentOperators = new ClassPart("assignment-operators", new string[] { "+=", "-=", "*=", "/=", "%="});
+        ClassPart AssignmentOperators = new ClassPart("assignment-operator", new string[] { "+=", "-=", "*=", "/=", "%="});
 
         public
         static
-        ClassPart DirectAssignmentOperators = new ClassPart("direct-assignment-operators", new string[] { "=" });
+        ClassPart DirectAssignmentOperators = new ClassPart("direct-assignment-operator", new string[] { "=" });
 
 
         public
         static
-        ClassPart SimpleArithmeticOperators = new ClassPart("simple-arithmetic-operators", new string[] { "+", "-" });
+        ClassPart SimpleArithmeticOperators = new ClassPart("simple-arithmetic-operator", new string[] { "+", "-" });
 
         public
         static
-        ClassPart ArithmeticOperators = new ClassPart("arithmetic-operators", new string[] { "*", "/", "%" });
+        ClassPart ArithmeticOperators = new ClassPart("arithmetic-operator", new string[] { "*", "/", "%" });
 
         public
         static
@@ -99,7 +99,7 @@ namespace Compiler
 
         public
         static
-        ClassPart UnaryOperators = new ClassPart("unary-operators", new string[] { "++", "--" });
+        ClassPart UnaryOperators = new ClassPart("unary-operator", new string[] { "++", "--" });
 
         public
         static

@@ -17,13 +17,22 @@ namespace Compiler
 
             
             string[] code = Filling.Read(sourcecode);
+            
             LexicalAnalyzer LA = new LexicalAnalyzer(code);
             LA.analyze(tokenset);
             
 
             string[] tokens = Filling.Read(tokenset);
-            SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
+            /*SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
             int tokenIndex = SA.analyze();
+            */
+            int tokenIndex = 0;
+
+
+            List<Token> _tokens = new List<Token>();
+            foreach (string token in tokens)
+                _tokens.Add(new Token(token));
+            TestSemanticTree.x.parse(_tokens.ToArray());
 
             
             if (tokenIndex == -1)

@@ -485,7 +485,7 @@ namespace Compiler
 
         bool VariableDeclaration___()
         {
-            if (index && tokens[tokenIndex] == "direct-assignment-operators")
+            if (index && tokens[tokenIndex] == "direct-assignment-operator")
             {
                 tokenIndex++;
                 if (AfterAssignment_())
@@ -507,7 +507,7 @@ namespace Compiler
             if (index && tokens[tokenIndex] == "identifier")
             {
                 tokenIndex++;
-                if (index && tokens[tokenIndex] == "unary-operators")
+                if (index && tokens[tokenIndex] == "unary-operator")
                 {
                     tokenIndex++;
                     return true;
@@ -516,7 +516,7 @@ namespace Compiler
                     return true;
                 else return true;
             }
-            else if (index && tokens[tokenIndex] == "unary-operators")
+            else if (index && tokens[tokenIndex] == "unary-operator")
             {
                 tokenIndex++;
                 if (index && tokens[tokenIndex] == "identifier")
@@ -722,14 +722,14 @@ namespace Compiler
         {
             if (BeforeAssignmentID_())
             {
-                if (index && (tokens[tokenIndex] == "direct-assignment-operators" || tokens[tokenIndex] == "assignment-operators"))
+                if (index && (tokens[tokenIndex] == "direct-assignment-operator" || tokens[tokenIndex] == "assignment-operator"))
                 {
                     tokenIndex++;
                     if (AfterAssignment_())
                         return true;
                     else return false;
                 }
-                else if (index && tokens[tokenIndex] == "unary-operators")
+                else if (index && tokens[tokenIndex] == "unary-operator")
                 {
                     tokenIndex++;
                     return true;
@@ -758,7 +758,7 @@ namespace Compiler
             if (index && tokens[tokenIndex] == "identifier")
             {
                 tokenIndex++;
-                if (index && tokens[tokenIndex] == "unary-operators")
+                if (index && tokens[tokenIndex] == "unary-operator")
                 {
                     tokenIndex++;
                     return true;
@@ -767,7 +767,7 @@ namespace Compiler
                     return true;
                 else return true;
             }
-            else if (index && tokens[tokenIndex] == "unary-operators")
+            else if (index && tokens[tokenIndex] == "unary-operator")
             {
                 tokenIndex++;
                 if (index && tokens[tokenIndex] == "identifier")
@@ -947,7 +947,7 @@ namespace Compiler
 
         bool ROP2()
         {
-            if (index && tokens[tokenIndex] == "relational-operators")
+            if (index && tokens[tokenIndex] == "relational-operator")
             {
                 tokenIndex++;
                 if (E())
@@ -970,7 +970,7 @@ namespace Compiler
 
         bool E2()
         {
-            if (index && tokens[tokenIndex] == "simple-arithmetic-operators")
+            if (index && tokens[tokenIndex] == "simple-arithmetic-operator")
             {
                 tokenIndex++;
                 if (T())
@@ -993,7 +993,7 @@ namespace Compiler
 
         bool T2()
         {
-            if (index && tokens[tokenIndex] == "arithmetic-operators")
+            if (index && tokens[tokenIndex] == "arithmetic-operator")
             {
                 tokenIndex++;
                 if (F())

@@ -151,18 +151,21 @@ namespace Compiler
                                                 _word = string.Empty;
                                                 continue;
                                             }
+                                            else
+                                            {
+                                                if (!(_word == string.Empty))
+                                                {
+                                                    Token _t = new Token(ClassPart.classPart(_word), _word, (lineCount + 1));
+                                                    tokens.Add(_t);
+                                                }
+
+                                                Token __t = new Token(letter, (lineCount + 1));
+                                                tokens.Add(__t);
+
+                                                _word = string.Empty;
+                                            }
                                         }
-                                        else
-                                        {
-                                            Token _t = new Token(ClassPart.classPart(_word), _word, (lineCount + 1));
-                                            tokens.Add(_t);
-
-                                            Token __t = new Token(letter, (lineCount + 1));
-                                            tokens.Add(__t);
-
-                                            _word = string.Empty;
-                                        }
-
+                                        
                                         break;
                                     case '{':
                                     case '}':

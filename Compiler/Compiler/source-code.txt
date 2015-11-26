@@ -1,13 +1,25 @@
-task sum (array:[Int]) returns Int {
-var i = 0
-var sum = 0
-till (i < array.count) {
+((3 + 2) * 3)
+|-var x: Int, y: Float, c: String
+firm z: A -|
+|-task sum (array:[Int]) returns Int {
 sum += array[i]
-array[--i] = i++
+array[--i] = (i + s)
 array[i--]=array[0]
 i++
-}
+function(3, 2, [2, (3 + i), 4])
+var a = x()
+var c = [i++, --i, 4]
 return sum
 }
-
 var x = i++, x: Int, x=0.0, u=.0
+
+class A {
+var a = 0
+task x () {
+till x {
+}
+}
+
+commence() {
+}
+} -|
