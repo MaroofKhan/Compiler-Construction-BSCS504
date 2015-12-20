@@ -14,6 +14,7 @@ namespace Compiler
 
             const string sourcecode = "source-code.txt";
             const string tokenset = "token-set.txt";
+            const string intermediatecode = "intermediate-code.txt";
 
             
             string[] code = Filling.Read(sourcecode);
@@ -23,32 +24,29 @@ namespace Compiler
             
 
             string[] tokens = Filling.Read(tokenset);
-            List<Token> _tokens = new List<Token>();
-            foreach (string token in tokens)
-                _tokens.Add(new Token(token));
-            ICGTree.MainSyntaxTree.analyze(_tokens.ToArray());
-            foreach (string line in ICGTree.MainSyntaxTree.intermediateCode.ToArray())
-                Console.WriteLine(line);
-            /*
-             * SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
+            SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
             int tokenIndex = SA.analyze();
             
             //int tokenIndex = 0;
-
-
-            List<Token> _tokens = new List<Token>();
-            foreach (string token in tokens)
-                _tokens.Add(new Token(token));
-            TestSemanticTree.MainSemanticTree.parse(_tokens.ToArray());
-            List<ErrorRecord> errors= TestSemanticTree.MainSemanticTree.errors;
-
-            Console.WriteLine("Errors");
-            foreach (ErrorRecord record in errors.ToArray())
-                Console.WriteLine(record.identifier + ", " + record.type + ", "+ record._token.line);
             
             if (tokenIndex == -1)
             {
-                Console.WriteLine("Successfully parsed!");
+                List<Token> _tokens = new List<Token>();
+                foreach (string token in tokens)
+                    _tokens.Add(new Token(token));
+
+                TestSemanticTree.MainSemanticTree.parse(_tokens.ToArray());
+                List<ErrorRecord> errors= TestSemanticTree.MainSemanticTree.errors;
+                if (errors.ToArray().Length == 0)
+                {
+                    ICGTree.MainSyntaxTree.analyze(intermediatecode, _tokens.ToArray());
+                }
+                else
+                {
+                    foreach (ErrorRecord error in errors.ToArray())
+                        Console.WriteLine(error.identifier + "on line# " + error._token.line + "(" + error._token.valuepart + ")");
+                }
+            
             }
             else
             {
@@ -65,9 +63,6 @@ namespace Compiler
                 Console.WriteLine(line);
                 Console.WriteLine(error);
             }
-             * */
-
-
         }
     }
 }

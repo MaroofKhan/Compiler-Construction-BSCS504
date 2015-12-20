@@ -34,7 +34,8 @@ namespace Compiler
                     character == '"' ||
                     character == '\'' ||
                     character == '&' ||
-                    character == '|'
+                    character == '|' ||
+                    character == ';'
                     );
         }
 
@@ -147,7 +148,8 @@ namespace Compiler
                 word.Contains('"') ||
                 word.Contains('\'') ||
                 word.Contains('&') ||
-                word.Contains('|')
+                word.Contains('|') ||
+                word.Contains(';')
                 );
         }
 

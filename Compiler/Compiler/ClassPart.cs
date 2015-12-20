@@ -103,6 +103,10 @@ namespace Compiler
 
         public
         static
+        ClassPart Considering = new ClassPart("considering", new string[] { "considering" });
+
+        public
+        static
         ClassPart[] ClassParts = new ClassPart[] {
             DataTypes,
             Else,
@@ -126,7 +130,8 @@ namespace Compiler
             ArithmeticOperators,
             LogicalOperatorOR,
             LogicalOperatorAND,
-            UnaryOperators
+            UnaryOperators,
+            Considering
         };
 
         public

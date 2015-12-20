@@ -562,6 +562,13 @@ namespace Compiler
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
                     tokenIndex++;
+                    if (checkIndex && tokens[tokenIndex].classpart.name == ":")
+                    {
+                        tokenIndex++;
+                        if (checkIndex && tokens[tokenIndex].classpart.name == "identifier");
+                        else return false;
+                         
+                    }
                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                     {
                         tokenIndex++;

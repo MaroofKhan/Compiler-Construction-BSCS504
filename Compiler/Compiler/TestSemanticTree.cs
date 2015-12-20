@@ -11,20 +11,29 @@ namespace Compiler
         public static TestSemanticTree MainSemanticTree = new TestSemanticTree();
 
         public List<ErrorRecord> errors;
-        ClassRecord global;
+        List<ClassRecord> classes;
         Stack<ClassRecord> classStack;
+        List<VariableRecord> variables;
+        List<FunctionRecord> functions;
 
         ClassRecord lookupClass(string identifier)
         {
-            ClassRecord _record = currentClass.lookupClass(identifier);
-            if (_record != null)
-                return _record;
-            else
-            {
-                foreach (ClassRecord record in classStack.ToArray())
-                    if (record.identifier == identifier) return record;
-            }
+         foreach (ClassRecord record in classes.ToArray())
+            if (record.identifier == identifier) return record;
+            return null;
+        }
 
+        VariableRecord lookupVariable(string identifier)
+        {
+            foreach (VariableRecord record in variables.ToArray())
+                if (record.identifier == identifier) return record;
+            return null;
+        }
+
+        FunctionRecord lookupFuncion(string identifier)
+        {
+            foreach (FunctionRecord record in functions.ToArray())
+                if (record.identifier == identifier) return record;
             return null;
         }
 
@@ -33,10 +42,15 @@ namespace Compiler
         TestSemanticTree()
         {
             errors = new List<ErrorRecord>();
-            global = new ClassRecord();
             classStack = new Stack<ClassRecord>();
-            classStack.Push(global);
-            currentClass.scopeStack.Push(0);
+            classes = new List<ClassRecord>();
+
+            variables = new List<VariableRecord>();
+            functions = new List<FunctionRecord>();
+
+            ClassRecord record = new ClassRecord();
+            record.identifier = "global";
+            classStack.Push(record);
         }
         
         int tokenIndex;
@@ -655,6 +669,18 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    ClassRecord record = lookupClass(tokens[tokenIndex].valuepart);
+                    ClassRecord r = new ClassRecord();
+                    if (record == null)
+                    {
+                        r.identifier = tokens[tokenIndex].valuepart;
+                        classStack.Push(r);
+                    }
+                    else
+                    {
+                        errors.Add(new ErrorRecord("Redeclared Class", "Class named " + tokens[tokenIndex].valuepart + " has already been declared" , tokens[tokenIndex]));
+                        return false;
+                    }
                     tokenIndex++;
                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                     {
@@ -664,6 +690,7 @@ namespace Compiler
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
+                                classStack.Pop();
                                 tokenIndex++;
                                 return true;
                             }
@@ -709,7 +736,8 @@ namespace Compiler
                 {
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
-                    if (parameters() || (tokenIndex == _tokenIndex))
+                    string type = null;
+                    if (parameters(ref type) || (tokenIndex == _tokenIndex))
                     {
                         if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                         {
@@ -748,12 +776,24 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    FunctionRecord record = currentClass.lookupFunction(tokens[tokenIndex].valuepart);
+                    FunctionRecord r = new FunctionRecord();
+                    if (record == null)
+                    {
+                        r.identifier = tokens[tokenIndex].valuepart;
+                    }
+                    else
+                    {
+                        errors.Add(new ErrorRecord("Function Redeclaration", "Function named " + tokens[tokenIndex].valuepart + " already declared " + (currentClass.identifier == "global" ? "" : "in class " + currentClass.identifier), tokens[tokenIndex]));
+                        return false;
+                    }
                     tokenIndex++;
                     if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                     {
                         tokenIndex++;
                         int _tokenIndex = tokenIndex;
-                        if (parameters() || (tokenIndex == _tokenIndex))
+                        string type = null;
+                        if (parameters(ref type) || (tokenIndex == _tokenIndex))
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                             {
@@ -763,6 +803,7 @@ namespace Compiler
                                     tokenIndex++;
                                     if (checkIndex && (tokens[tokenIndex].classpart.name == "identifier" || tokens[tokenIndex].classpart.name == "data-type"))
                                     {
+                                        type += "#" + tokens[tokenIndex].valuepart;
                                         tokenIndex++;
                                     }
                                     else if (checkIndex && (tokens[tokenIndex].classpart.name == "["))
@@ -773,6 +814,7 @@ namespace Compiler
                                             tokenIndex++;
                                             if (checkIndex && (tokens[tokenIndex].classpart.name == "]"))
                                             {
+                                                type += "#[" + tokens[tokenIndex - 1].valuepart + "]";
                                                 tokenIndex++;
                                             }
                                             else return false;
@@ -784,11 +826,13 @@ namespace Compiler
                                 if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                                 {
                                     tokenIndex++;
+                                    r.signature = (type == null) ? "#" : type;
                                     int __tokenIndex = tokenIndex;
-                                    if (task_body() || (tokenIndex == __tokenIndex))
+                                    if (task_body() || true)
                                     {
                                         if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                                         {
+                                            currentClass.addFunction(r);
                                             tokenIndex++;
                                             return true;
                                         }
@@ -831,14 +875,15 @@ namespace Compiler
         }
 
         #region Parameters
-        bool parameters()
+        bool parameters(ref string type)
         {
-            if (parameter())
+            if (parameter(ref type))
             {
                 if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                 {
                     tokenIndex++;
-                    if (parameters())
+                    type += ",";
+                    if (parameters(ref type))
                         return true;
                     else return false;
                 }
@@ -847,7 +892,7 @@ namespace Compiler
             else return false;
         }
 
-        bool parameter()
+        bool parameter(ref string type)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
@@ -857,6 +902,7 @@ namespace Compiler
                     tokenIndex++;
                     if (checkIndex && (tokens[tokenIndex].classpart.name == "identifier" || tokens[tokenIndex].classpart.name == "data-type"))
                     {
+                        type += tokens[tokenIndex].valuepart;
                         tokenIndex++;
                         return true;
                     }

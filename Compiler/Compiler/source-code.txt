@@ -1,14 +1,23 @@
-whenever ((((3 + 3) * 3) < (5 + (6 * 6))) && NO) {
-whenever (4 * 9) {
-} else {
+class c {
+task x () {
+var f = C()
+var c = f.x(3, 4.4)
 }
 }
 
-repeat {
-} till (3 < 4)
-
-till (5 < 7) {
+|-class b {
+commence() {
+till (c < v) {
+var i = (9 * (i + 9))
 }
+}
+task x (c:Int, f: [c]) {
+var x = (7 + 9)
+}
+}-|
+
+
+
 
 |-var x = 0
 var i:Int = 0

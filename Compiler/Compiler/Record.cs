@@ -126,15 +126,11 @@ namespace Compiler
 
         List<VariableRecord> variableTable;
         List<FunctionRecord> functionTable;
-        List<ClassRecord> classTable;
-        public Stack<int> scopeStack;
 
         public ClassRecord()
         {
             variableTable = new List<VariableRecord>();
             functionTable = new List<FunctionRecord>();
-            classTable = new List<ClassRecord>();
-            scopeStack = new Stack<int>();
         }
 
         public string identifier
@@ -153,7 +149,6 @@ namespace Compiler
             set { _scope = value; }
         }
 
-        int currentScope { get { return scopeStack.Peek(); } }
 
         public VariableRecord lookupVariable(string identifier)
         {
@@ -169,13 +164,7 @@ namespace Compiler
             return null;
         }
 
-        public ClassRecord lookupClass(string identifier)
-        {
-            foreach (ClassRecord record in classTable)
-                if (record.identifier == identifier) return record;
-            return null;
-        }
-
+        
         public VariableRecord scopeOfVariable(string identifier)
         {
             foreach (VariableRecord record in variableTable)
@@ -196,10 +185,8 @@ namespace Compiler
             return -1;
         }
 
-        bool existsInCurrentScope(Record record) { return (record._scope == currentScope); }
         public void addVariable(VariableRecord variable) { variableTable.Add(variable); }
         public void addFunction(FunctionRecord function) { functionTable.Add(function); }
-        public void addClass(ClassRecord _class) { classTable.Add(_class); }
 
     }
 
@@ -242,7 +229,8 @@ namespace Compiler
         {
             get { return _type; }
             set
-            { if (Regex.IsMatch(value, @"^([a-zA-Z]+)#([a-zA-Z]+,)*([a-zA-Z]+)*$")) _type = value;
+            {
+                if (Regex.IsMatch(value, @"^([a-zA-Z]+)#([a-zA-Z]+,)*([a-zA-Z]+)*$") || Regex.IsMatch(value, @"^#$") || Regex.IsMatch(value, @"^#([a-zA-Z]+,)*([a-zA-Z]+)*$") || Regex.IsMatch(value, @"^([a-zA-Z]+)#$")) _type = value;
                   else throw new Exception("Signature not vaid for a function."); }
         }
 

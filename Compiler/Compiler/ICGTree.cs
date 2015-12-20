@@ -13,13 +13,24 @@ namespace Compiler
         private ICGTree()
         {
             intermediateCode = new List<string>();
-            intermediate_code = string.Empty;
+            classes = new Stack<string>();
+            functions = new List<string>();
         }
 
+        string function(string name)
+        {
+            foreach (string _function in functions.ToArray())
+                if (_function.Contains(name)) return _function;
+            return null;
+        }
+
+        string currentClass { get { return classes.Peek(); } }
+
+        Stack<string> classes;
         int tokenIndex;
         Token[] tokens;
         public List<string> intermediateCode;
-        string intermediate_code;
+        List<string> functions;
 
         int labelCount = 0;
         int varCount = 0;
@@ -31,15 +42,12 @@ namespace Compiler
         string generateVar() { return "t" + varCount++; }
 
 
-        public int analyze(Token[] tokens)
+        public void analyze(string outputFileName, Token[] tokens)
         {
             this.tokens = tokens;
             this.tokenIndex = 0;
-
-            if (start())
-                return -1;
-            else return tokenIndex;
-
+            start();
+            Filling.Write(outputFileName, intermediateCode.ToArray());
         }
         bool checkIndex { get { return tokenIndex < tokens.Length; } }
 
@@ -53,6 +61,7 @@ namespace Compiler
         }
         bool globalBody()
         {
+            classes.Push("Global");
             int _tokenIndex = tokenIndex;
             if (declarations())
                 return true;
@@ -68,15 +77,19 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
+                string id = tokens[tokenIndex].valuepart;
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                 {
+                    string _func = (currentClass == "Global" ? "" : currentClass + "_") + id;
+                    _func = function(_func);
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
                     if (passables() || (tokenIndex == _tokenIndex))
                     {
                         if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                         {
+                            addToICG("call " + _func);
                             tokenIndex++;
                             return true;
                         }
@@ -94,15 +107,44 @@ namespace Compiler
                     tokenIndex++;
                     if (checkIndex && tokens[tokenIndex].classpart.name == "integer-constant")
                     {
+                        string constant = tokens[tokenIndex].valuepart;
                         tokenIndex++;
                         if (checkIndex && tokens[tokenIndex].classpart.name == "]")
                         {
                             tokenIndex++;
                             if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                             {
+                                string op;
+                                switch (tokens[tokenIndex].valuepart)
+                                {
+                                    case "+=":
+                                        op = "+";
+                                        break;
+                                    case "-=":
+                                        op = "-";
+                                        break;
+                                    case "*=":
+                                        op = "*";
+                                        break;
+                                    case "\\=":
+                                        op = "\\";
+                                        break;
+                                    case "%=":
+                                        op = "%";
+                                        break;
+                                    default:
+                                        op = "=";
+                                        break;
+                                }
+
                                 tokenIndex++;
                                 string name = null;
-                                return (isExpression(ref name));
+                                if (isExpression(ref name))
+                                {
+                                    addToICG(id+ "[" + constant + "]" + " " + op + " " + name);
+                                    return true;
+                                }
+                                else return false;
                             }
                             else return true;
                         }
@@ -110,15 +152,44 @@ namespace Compiler
                     }
                     else if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                     {
+                        string constant = tokens[tokenIndex].valuepart;
                         tokenIndex++;
                         if (checkIndex && tokens[tokenIndex].classpart.name == "]")
                         {
                             tokenIndex++;
                             if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                             {
+                                string op;
+                                switch (tokens[tokenIndex].valuepart)
+                                {
+                                    case "+=":
+                                        op = "+";
+                                        break;
+                                    case "-=":
+                                        op = "-";
+                                        break;
+                                    case "*=":
+                                        op = "*";
+                                        break;
+                                    case "\\=":
+                                        op = "\\";
+                                        break;
+                                    case "%=":
+                                        op = "%";
+                                        break;
+                                    default:
+                                        op = "=";
+                                        break;
+                                }
+
                                 tokenIndex++;
                                 string name = null;
-                                return (isExpression(ref name));
+                                if (isExpression(ref name))
+                                {
+                                    addToICG(id + "[" + constant + "]" + " " + op + " " + name);
+                                    return true;
+                                }
+                                else return false;
                             }
                             else return true;
                         }
@@ -130,9 +201,38 @@ namespace Compiler
                                 tokenIndex++;
                                 if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                                 {
+                                    string op;
+                                    switch (tokens[tokenIndex].valuepart)
+                                    {
+                                        case "+=":
+                                            op = "+";
+                                            break;
+                                        case "-=":
+                                            op = "-";
+                                            break;
+                                        case "*=":
+                                            op = "*";
+                                            break;
+                                        case "\\=":
+                                            op = "\\";
+                                            break;
+                                        case "%=":
+                                            op = "%";
+                                            break;
+                                        default:
+                                            op = "=";
+                                            break;
+                                    }
+
                                     tokenIndex++;
                                     string name = null;
-                                    return (isExpression(ref name));
+                                    if (isExpression(ref name))
+                                    {
+                                        addToICG(id + "[" + constant + "]" + " " + op + " " + name);
+                                        addToICG(constant + " = " + constant + ((tokens[tokenIndex].valuepart == "++") ? "+" : "-") + " 1");
+                                        return true;
+                                    }
+                                    else return false;
                                 }
                                 else return true;
                             }
@@ -142,18 +242,49 @@ namespace Compiler
                     }
                     else if (checkIndex && tokens[tokenIndex].classpart.name == "unary-operator")
                     {
+                        addToICG(id + " = " + id + ((tokens[tokenIndex].valuepart == "++") ? "+" : "-") + " 1");
                         tokenIndex++;
                         if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                         {
+                            string constant = tokens[tokenIndex].valuepart;
+                            addToICG(constant + " = " + constant + ((tokens[tokenIndex].valuepart == "++") ? "+" : "-") + " 1");
                             tokenIndex++;
                             if (checkIndex && tokens[tokenIndex].classpart.name == "]")
                             {
                                 tokenIndex++;
                                 if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                                 {
+                                    string op;
+                                    switch (tokens[tokenIndex].valuepart)
+                                    {
+                                        case "+=":
+                                            op = "+";
+                                            break;
+                                        case "-=":
+                                            op = "-";
+                                            break;
+                                        case "*=":
+                                            op = "*";
+                                            break;
+                                        case "\\=":
+                                            op = "\\";
+                                            break;
+                                        case "%=":
+                                            op = "%";
+                                            break;
+                                        default:
+                                            op = "=";
+                                            break;
+                                    }
+
                                     tokenIndex++;
                                     string name = null;
-                                    return (isExpression(ref name));
+                                    if (isExpression(ref name))
+                                    {
+                                        addToICG(id + "[" + constant + "]" + " " + op + " " + name);
+                                        return true;
+                                    }
+                                    else return false;
                                 }
                                 else return true;
                             }
@@ -166,11 +297,40 @@ namespace Compiler
                 else if (checkIndex && tokens[tokenIndex].classpart.name == "unary-operator")
                 {
                     tokenIndex++;
+                    addToICG(id + " = " + id + ((tokens[tokenIndex].valuepart == "++") ? "+" : "-") + " 1");
                     if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                     {
+                        string op;
+                        switch (tokens[tokenIndex].valuepart)
+                        {
+                            case "+=":
+                                op = "+";
+                                break;
+                            case "-=":
+                                op = "-";
+                                break;
+                            case "*=":
+                                op = "*";
+                                break;
+                            case "\\=":
+                                op = "\\";
+                                break;
+                            case "%=":
+                                op = "%";
+                                break;
+                            default:
+                                op = "=";
+                                break;
+                        }
+
                         tokenIndex++;
                         string name = null;
-                        return (isExpression(ref name));
+                        if (isExpression(ref name))
+                        {
+                            addToICG(id + " = " + id + " " + op + " " + name);
+                            return true;
+                        }
+                        else return false;
                     }
                     else return true;
                 }
@@ -181,9 +341,37 @@ namespace Compiler
                 }
                 else if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                 {
+                    string op;
+                    switch (tokens[tokenIndex].valuepart)
+                    {
+                        case "+=":
+                            op = "+";
+                            break;
+                        case "-=":
+                            op = "-";
+                            break;
+                        case "*=":
+                            op = "*";
+                            break;
+                        case "\\=":
+                            op = "\\";
+                            break;
+                        case "%=":
+                            op = "%";
+                            break;
+                        default:
+                            op = "=";
+                            break;
+                    }
+
                     tokenIndex++;
                     string name = null;
-                    return (isExpression(ref name));
+                    if (isExpression(ref name))
+                    {
+                        addToICG(id + " = " + id + " " + op + " " + name);
+                        return true;
+                    }
+                    else return false;
                 }
                 else return false;
             }
@@ -193,26 +381,29 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
-                if (op == null) name = tokens[tokenIndex].valuepart;
-                else
-                {
-                    string _name = generateVar();
-                    addToICG(_name + " " + "=" + " " + name + " " + op + " " + tokens[tokenIndex].valuepart);
-                    name = _name;
-                }
+                string id = tokens[tokenIndex].valuepart;
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                 {
+                    string _func = (currentClass == "Global" ? "" : currentClass + "_") + id;
+                    _func = function(_func);
+                    if (_func == null) _func = function(id);
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
                     if (passables() || (tokenIndex == _tokenIndex))
                     {
                         if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                         {
+                            addToICG("call " + _func);
                             tokenIndex++;
                             return true;
                         }
                         else return false;
+                    }
+                    else if (checkIndex && tokens[tokenIndex].classpart.name == ")")
+                    {
+                        tokenIndex++;
+                        return true;
                     }
                     else return false;
                 }
@@ -278,7 +469,17 @@ namespace Compiler
                     tokenIndex++;
                     return true;
                 }
-                else return true;
+                else
+                {
+                    if (op == null) name = tokens[tokenIndex].valuepart;
+                    else
+                    {
+                        string _name = generateVar();
+                        addToICG(_name + " " + "=" + " " + name + " " + op + " " + tokens[tokenIndex].valuepart);
+                        name = _name;
+                    }
+                    return true;
+                }
             }
             else if (checkIndex && tokens[tokenIndex].classpart.name == "unary-operator")
             {
@@ -292,22 +493,48 @@ namespace Compiler
             }
             else return false;
         }
-        bool assignment_to_identifier()
+        bool assignment_to_identifier(ref string line)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
+                string id = tokens[tokenIndex].valuepart;
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "unary-operator")
                 {
+                    string op = (tokens[tokenIndex].valuepart == "++") ? "+" : "-";
+                    line = id + " " + "=" + " " + id + " " + op + " " + "1";
                     tokenIndex++;
                     return true;
                 }
                 else if (checkIndex && tokens[tokenIndex].classpart.name == "assignment-operator")
                 {
+                    string op;
+                    switch (tokens[tokenIndex].valuepart)
+                    {
+                        case "+=":
+                            op = "+";
+                            break;
+                        case "-=":
+                            op = "-";
+                            break;
+                        case "*=":
+                            op = "*";
+                            break;
+                        case "\\=":
+                            op = "\\";
+                            break;
+                        default:
+                            op = "%";
+                            break;
+                    }
                     tokenIndex++;
                     string name = null;
                     if (isExpression(ref name))
+                    {
+                        line = id + " " + "=" + " " + id + " " + op + " " + name;
                         return true;
+                    }
+                        
                     else return false;
                 }
                 else return false;
@@ -330,7 +557,12 @@ namespace Compiler
         bool passable()
         {
             string name = null;
-            return isExpression(ref name);
+            if (isExpression(ref name))
+            {
+                addToICG("param: " + name);
+                return true;
+            }
+            else return false;
         }
         bool declarations_with_access_modifiers()
         {
@@ -384,7 +616,8 @@ namespace Compiler
                             {
                                 tokenIndex++;
                                 int ___tokenIndex = tokenIndex;
-                                if (assignment_to_identifier() || (tokenIndex == ___tokenIndex))
+                                string line = null;
+                                if (assignment_to_identifier(ref line) || (tokenIndex == ___tokenIndex))
                                 {
                                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                                     {
@@ -393,7 +626,9 @@ namespace Compiler
                                         {
                                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                                             {
+                                                addToICG(line);
                                                 addToICG("jmp" + " " + label);
+                                                addToICG(outLabel + ":");
                                                 tokenIndex++;
                                                 return true;
                                             }
@@ -426,7 +661,7 @@ namespace Compiler
                 {
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
-                    if (innerMostBody() || (tokenIndex == _tokenIndex))
+                    if (innerMostBody() || true)
                     {
                         if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                         {
@@ -469,7 +704,7 @@ namespace Compiler
                     {
                         tokenIndex++;
                         int _tokenIndex = tokenIndex;
-                        if (innerMostBody() || (tokenIndex == _tokenIndex))
+                        if (innerMostBody() || true)
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
@@ -482,6 +717,7 @@ namespace Compiler
                         }
                         else if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                         {
+                            addToICG(outLabel + ":");
                             tokenIndex++;
                             return true;
                         }
@@ -582,15 +818,17 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    classes.Push(tokens[tokenIndex].valuepart);
                     tokenIndex++;
                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                     {
                         tokenIndex++;
                         int __tokenIndex = tokenIndex;
-                        if (structure_body() || (tokenIndex == __tokenIndex))
+                        if (structure_body() || true)
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
+                                classes.Pop();
                                 tokenIndex++;
                                 return true;
                             }
@@ -623,6 +861,7 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    classes.Push(tokens[tokenIndex].valuepart);
                     tokenIndex++;
                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                     {
@@ -632,6 +871,7 @@ namespace Compiler
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
+                                classes.Pop();
                                 tokenIndex++;
                                 return true;
                             }
@@ -672,15 +912,18 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "commence")
             {
+                string name = currentClass + "_" + "commence" + "_";
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                 {
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
-                    if (parameters() || (tokenIndex == _tokenIndex))
+                    if (parameters(ref name) || (tokenIndex == _tokenIndex))
                     {
                         if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                         {
+                            addToICG("def" + " " + name);
+
                             tokenIndex++;
                             if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                             {
@@ -690,6 +933,7 @@ namespace Compiler
                                 {
                                     if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                                     {
+                                        addToICG("end" + " " + name);
                                         tokenIndex++;
                                         return true;
                                     }
@@ -716,13 +960,17 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    string name = (currentClass == "Global" ? "" : currentClass + "_") + tokens[tokenIndex].valuepart + "_";
+                    string startLine = "def" + " ";
                     tokenIndex++;
                     if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                     {
                         tokenIndex++;
                         int _tokenIndex = tokenIndex;
-                        if (parameters() || (tokenIndex == _tokenIndex))
+                        if (parameters(ref name) || (tokenIndex == _tokenIndex))
                         {
+                            addToICG(startLine + name);
+                            functions.Add(name);
                             if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                             {
                                 tokenIndex++;
@@ -757,6 +1005,7 @@ namespace Compiler
                                     {
                                         if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                                         {
+                                            addToICG("end " + name);
                                             tokenIndex++;
                                             return true;
                                         }
@@ -799,14 +1048,15 @@ namespace Compiler
         }
 
         #region Parameters
-        bool parameters()
+        bool parameters(ref string name)
         {
-            if (parameter())
+            if (parameter(ref name))
             {
                 if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                 {
+                    name += ",";
                     tokenIndex++;
-                    if (parameters())
+                    if (parameters(ref name))
                         return true;
                     else return false;
                 }
@@ -815,7 +1065,7 @@ namespace Compiler
             else return false;
         }
 
-        bool parameter()
+        bool parameter(ref string name)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
@@ -825,6 +1075,7 @@ namespace Compiler
                     tokenIndex++;
                     if (checkIndex && (tokens[tokenIndex].classpart.name == "identifier" || tokens[tokenIndex].classpart.name == "data-type"))
                     {
+                        name += tokens[tokenIndex].valuepart;
                         tokenIndex++;
                         return true;
                     }
@@ -833,6 +1084,7 @@ namespace Compiler
                         tokenIndex++;
                         if (checkIndex && (tokens[tokenIndex].classpart.name == "identifier" || tokens[tokenIndex].classpart.name == "data-type"))
                         {
+                            name += "Array(" + tokens[tokenIndex].valuepart + ")";
                             tokenIndex++;
                             if (checkIndex && (tokens[tokenIndex].classpart.name == "]"))
                             {
@@ -1066,7 +1318,7 @@ namespace Compiler
         }
 
         bool F(ref string name, ref string op)
-{
+        {
             if (checkIndex && tokens[tokenIndex].classpart.name == "(")
             {
                 string _name = null;

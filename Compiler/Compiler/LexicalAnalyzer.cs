@@ -165,6 +165,19 @@ namespace Compiler
                                                 _word = string.Empty;
                                             }
                                         }
+                                        else
+                                        {
+                                            if (!(_word == string.Empty))
+                                            {
+                                                Token _t = new Token(ClassPart.classPart(_word), _word, (lineCount + 1));
+                                                tokens.Add(_t);
+                                            }
+
+                                            Token __t = new Token(letter, (lineCount + 1));
+                                            tokens.Add(__t);
+
+                                            _word = string.Empty;
+                                        }
                                         
                                         break;
                                     case '{':
@@ -175,6 +188,7 @@ namespace Compiler
                                     case ':':
                                     case '[':
                                     case ']':
+                                    case ';':
                                         if (String)
                                         {
                                             StringConstant += letter;
@@ -504,10 +518,8 @@ namespace Compiler
             Token[] array = tokens.ToArray();
             string[] tokenset = new string[array.Length];
             for (int index = 0; index < array.Length; index++)
-            {
                 tokenset[index] = array[index].token;
-                Console.WriteLine(index + ": " + tokenset[index]);
-            }
+            
             Filling.Write(outputFileName, tokenset);
         }
     }
