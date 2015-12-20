@@ -6,114 +6,45 @@ using System.Threading.Tasks;
 
 namespace Compiler
 {
-    class TestSemanticTree
+    class ICGTree
     {
-        public static TestSemanticTree MainSemanticTree = new TestSemanticTree();
+        public static ICGTree MainSyntaxTree = new ICGTree();
 
-        public List<ErrorRecord> errors;
-        ClassRecord global;
-        Stack<ClassRecord> classStack;
-
-        ClassRecord lookupClass(string identifier)
+        private ICGTree()
         {
-            ClassRecord _record = currentClass.lookupClass(identifier);
-            if (_record != null)
-                return _record;
-            else
-            {
-                foreach (ClassRecord record in classStack.ToArray())
-                    if (record.identifier == identifier) return record;
-            }
-
-            return null;
+            intermediateCode = new List<string>();
+            intermediate_code = string.Empty;
         }
 
-        ClassRecord currentClass { get { return classStack.Peek(); } }
-
-        TestSemanticTree()
-        {
-            errors = new List<ErrorRecord>();
-            global = new ClassRecord();
-            classStack = new Stack<ClassRecord>();
-            classStack.Push(global);
-            currentClass.scopeStack.Push(0);
-        }
-        
         int tokenIndex;
         Token[] tokens;
+        public List<string> intermediateCode;
+        string intermediate_code;
 
-        bool check<T> (T value, T[] array) {
-            foreach (T _value in array)
-                if (value.Equals(_value)) return true;
-            return false;
-        }
+        int labelCount = 0;
+        int varCount = 0;
 
-        string compatible_type (string type_1, string _operator, string type_2)
-        {
-            if (check<string>(_operator, new string[] { "-", "*" }))
-                if (type_1 == "Int" || type_1 == "Float")
-                    if (type_1 == type_2)
-                        return type_1;
-                    else return "Float";
-                else return null;
-            else if (check<string>(_operator, new string[] { "+" }))
-                if (type_1 == "Int" || type_1 == "Float")
-                    if (type_1 == type_2)
-                        return type_1;
-                    else return "Float";
-                else if (type_1 == "String" || type_1 == "Char")
-                    if (type_2 == "String" || type_2 == "Char")
-                        return "String";
-                    else return null;
-                else return null;
-            else if (check<string>(_operator, new string[] { "/", "%" }))
-                if (type_1 == "Int" || type_1 == "Float")
-                    if (type_1 == type_2)
-                        return type_1;
-                    else return null;
-                else return null;
-            else if (check<string>(_operator, new string[] { "<", "<=", ">", ">=" }))
-                if (type_1 == "Int" || type_1 == "Float")
-                    if (type_1 == type_2)
-                        return "Bool";
-                    else return null;
-                else return null;
-            else if (check<string>(_operator, new string[] { "==", "!=" }))
-                if (type_1 == type_2)
-                    return "Bool";
-                else return null;
-            else if (check<string>(_operator, new string[] { "=" }))
-                if (type_1 == type_2)
-                    return type_1;
-                else return null;
-            else if (_operator == "&&" || _operator == "||")
-                if (type_1 == "Bool")
-                    if (type_1 == type_2)
-                        return type_1;
-                    else return null;
-                else return null;
-            else return null;
-        }
+        void addToICG(string line) { intermediateCode.Add(line); }
 
-        bool checkIndex { get { return tokenIndex < tokens.Length; } }
+        string generateLabel() { return "L" + labelCount++; }
 
-        public int parse(Token[] tokens)
+        string generateVar() { return "t" + varCount++; }
+
+
+        public int analyze(Token[] tokens)
         {
             this.tokens = tokens;
             this.tokenIndex = 0;
-            int index = this.parse();
-            return index;
-        }
-        public int parse()
-        {
+
             if (start())
                 return -1;
             else return tokenIndex;
+
         }
+        bool checkIndex { get { return tokenIndex < tokens.Length; } }
 
         bool start()
         {
-            
             if (tokenIndex < tokens.Length)
                 if (globalBody())
                     return start();
@@ -170,8 +101,8 @@ namespace Compiler
                             if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                             {
                                 tokenIndex++;
-                                string type = null;
-                                return (isExpression(ref type));
+                                string name = null;
+                                return (isExpression(ref name));
                             }
                             else return true;
                         }
@@ -186,8 +117,8 @@ namespace Compiler
                             if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                             {
                                 tokenIndex++;
-                                string type = null;
-                                return (isExpression(ref type));
+                                string name = null;
+                                return (isExpression(ref name));
                             }
                             else return true;
                         }
@@ -200,8 +131,8 @@ namespace Compiler
                                 if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                                 {
                                     tokenIndex++;
-                                    string type = null;
-                                    return (isExpression(ref type));
+                                    string name = null;
+                                    return (isExpression(ref name));
                                 }
                                 else return true;
                             }
@@ -221,8 +152,8 @@ namespace Compiler
                                 if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                                 {
                                     tokenIndex++;
-                                    string type = null;
-                                    return (isExpression(ref type));
+                                    string name = null;
+                                    return (isExpression(ref name));
                                 }
                                 else return true;
                             }
@@ -238,8 +169,8 @@ namespace Compiler
                     if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                     {
                         tokenIndex++;
-                        string type = null;
-                        return (isExpression(ref type));
+                        string name = null;
+                        return (isExpression(ref name));
                     }
                     else return true;
                 }
@@ -251,17 +182,24 @@ namespace Compiler
                 else if (checkIndex && (tokens[tokenIndex].classpart.name == "direct-assignment-operator" || tokens[tokenIndex].classpart.name == "assignment-operator"))
                 {
                     tokenIndex++;
-                    string type = null;
-                    return (isExpression(ref type));
+                    string name = null;
+                    return (isExpression(ref name));
                 }
                 else return false;
             }
             else return false;
         }
-        bool after_assignment_operator_identifier()
+        bool after_assignment_operator_identifier(ref string name, ref string op)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
+                if (op == null) name = tokens[tokenIndex].valuepart;
+                else
+                {
+                    string _name = generateVar();
+                    addToICG(_name + " " + "=" + " " + name + " " + op + " " + tokens[tokenIndex].valuepart);
+                    name = _name;
+                }
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                 {
@@ -331,7 +269,9 @@ namespace Compiler
                 else if (checkIndex && tokens[tokenIndex].classpart.name == ".")
                 {
                     tokenIndex++;
-                    return after_assignment_operator_identifier();
+                    string _name = null;
+                    string _op = null;
+                    return after_assignment_operator_identifier(ref _name, ref _op);
                 }
                 else if (checkIndex && tokens[tokenIndex].classpart.name == "unary-operator")
                 {
@@ -365,8 +305,8 @@ namespace Compiler
                 else if (checkIndex && tokens[tokenIndex].classpart.name == "assignment-operator")
                 {
                     tokenIndex++;
-                    string type = null;
-                    if (isExpression(ref type))
+                    string name = null;
+                    if (isExpression(ref name))
                         return true;
                     else return false;
                 }
@@ -389,8 +329,8 @@ namespace Compiler
         }
         bool passable()
         {
-            string type = null;
-            return (isExpression(ref type));
+            string name = null;
+            return isExpression(ref name);
         }
         bool declarations_with_access_modifiers()
         {
@@ -431,11 +371,15 @@ namespace Compiler
                 {
                     if (checkIndex && tokens[tokenIndex].classpart.name == ";")
                     {
+                        string label = generateLabel();
+                        string outLabel = generateLabel();
+                        addToICG(label + ":");
                         tokenIndex++;
                         int __tokenIndex = tokenIndex;
-                        string type = null;
-                        if (isExpression(ref type) || (tokenIndex == __tokenIndex))
+                        string name = null;
+                        if (isExpression(ref name) || (tokenIndex == __tokenIndex))
                         {
+                            addToICG("if" + " " + "(" + name + " " + "==" + " " + "false" + ")" + " " + "jmp" + " " + outLabel);
                             if (checkIndex && tokens[tokenIndex].classpart.name == ";")
                             {
                                 tokenIndex++;
@@ -449,6 +393,7 @@ namespace Compiler
                                         {
                                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                                             {
+                                                addToICG("jmp" + " " + label);
                                                 tokenIndex++;
                                                 return true;
                                             }
@@ -474,6 +419,8 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "repeat")
             {
+                string label = generateLabel();
+                addToICG(label + ":");
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                 {
@@ -487,9 +434,12 @@ namespace Compiler
                             if (checkIndex && tokens[tokenIndex].classpart.name == "till")
                             {
                                 tokenIndex++;
-                                string type = null;
-                                if (isExpression(ref type))
+                                string name = null;
+                                if (isExpression(ref name))
+                                {
+                                    addToICG("if" + " " + "(" + name + " " + "==" + " " + "true" + ")" +" " + "jmp" + " " + label);
                                     return true;
+                                }
                                 else return false;
                             }
                             else return false;
@@ -506,10 +456,15 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "till")
             {
+                string label = generateLabel();
+                string outLabel = generateLabel();
+                addToICG(label + ":");
+
                 tokenIndex++;
-                string type = null;
-                if (isExpression(ref type))
+                string name = null;
+                if (isExpression(ref name))
                 {
+                    addToICG("if" + " " + "(" + name + " " + "==" + " " + "false" + ")" + " " + "jmp" + " " + outLabel);
                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                     {
                         tokenIndex++;
@@ -518,6 +473,7 @@ namespace Compiler
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
+                                addToICG(outLabel + ":");
                                 tokenIndex++;
                                 return true;
                             }
@@ -554,21 +510,31 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "whenever")
             {
+                string label = generateLabel();
+                string outLabel = generateLabel();
+                addToICG(label + ":");
                 tokenIndex++;
-                string type = null;
-                if (isExpression(ref type))
+                string name = null;
+                if (isExpression(ref name))
                 {
+                    addToICG("if" + " " + "(" + name + " " + "==" + " " + "false" + ")" + " " + "jmp" + " " + outLabel);
                     if (checkIndex && tokens[tokenIndex].classpart.name == "{")
                     {
                         tokenIndex++;
                         if (innerMostBody() || true)
                         {
+                            addToICG("jmp" + " " + label);
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
                                 tokenIndex++;
-                                if (_else() || true)
+                                if (_else(ref outLabel) || true)
+                                {
+                                    if (outLabel != null)
+                                        addToICG(outLabel + ":");
                                     return true;
-                                else return false;
+                                }
+                                    
+                                else return true;
                             }
                             else return false;
                         }
@@ -580,10 +546,12 @@ namespace Compiler
             }
             else return false;
         }
-        bool _else()
+        bool _else(ref string label)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "else")
             {
+                addToICG(label + ":");
+                label = null;
                 tokenIndex++;
                 if (whenever())
                     return true;
@@ -822,8 +790,8 @@ namespace Compiler
             else if ((tokenIndex == _tokenIndex) && checkIndex && tokens[tokenIndex].classpart.name == "return")
             {
                 tokenIndex++;
-                string type = null;
-                if (isExpression(ref type))
+                string name = null;
+                if (isExpression(ref name))
                     return task_body();
                 else return false;
             }
@@ -888,8 +856,6 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "variable")
             {
-                VariableRecord record = new VariableRecord();
-                record.constant = (tokens[tokenIndex].valuepart == "firm");
                 tokenIndex++;
                 /*if (checkIndex && variable_declaration_2())
                 {
@@ -901,43 +867,32 @@ namespace Compiler
                     else return false;
                 }
                 else return false;*/
-                return (checkIndex && variable_declaration_2(ref record));
+                return (checkIndex && variable_declaration_2());
             }
             else return false;
         }
 
-        bool variable_declaration_2(ref VariableRecord record)
+        bool variable_declaration_2()
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
-                record.identifier = tokens[tokenIndex].valuepart;
                 tokenIndex++;
                 int _tokenIndex = tokenIndex;
-                if (checkIndex && variable_declaration_3(ref record))
+                if (checkIndex && variable_declaration_3())
                 {
-                    VariableRecord _record = currentClass.lookupVariable(record.identifier);
-                    if (_record == null)
-                        currentClass.addVariable(record);
-                    else errors.Add(new ErrorRecord("Variable Redeclaration", "Variable " + tokens[tokenIndex].valuepart + " is already declared", tokens[tokenIndex]));
-                    
                     if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                     {
                         tokenIndex++;
-                        return (checkIndex && variable_declaration_2(ref record));
+                        return (checkIndex && variable_declaration_2());
                     }
                     else return true;
                 }
-                else if ((tokenIndex == _tokenIndex) && checkIndex && variable_declaration_4(ref record))
+                else if ((tokenIndex == _tokenIndex) && checkIndex && variable_declaration_4())
                 {
-                    VariableRecord _record = currentClass.lookupVariable(record.identifier);
-                    if (_record == null)
-                        currentClass.addVariable(record);
-                    else errors.Add(new ErrorRecord("Variable Redeclaration", "Variable " + tokens[tokenIndex - 1].valuepart + " is already declared", tokens[tokenIndex - 1]));
-                    
                     if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                     {
                         tokenIndex++;
-                        return (checkIndex && variable_declaration_2(ref record));
+                        return (checkIndex && variable_declaration_2());
                     }
                     else return true;
                 }
@@ -946,25 +901,16 @@ namespace Compiler
             else return false;
         }
 
-        bool variable_declaration_3(ref VariableRecord record)
+        bool variable_declaration_3()
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == ":")
             {
                 tokenIndex++;
                 if (checkIndex && (tokens[tokenIndex].classpart.name == "data-type" || tokens[tokenIndex].classpart.name == "identifier"))
                 {
-                    if (tokens[tokenIndex].classpart.name == "identifier")
-                    {
-                        ClassRecord _record = lookupClass(tokens[tokenIndex].valuepart);
-
-                        if (_record == null)
-                            errors.Add(new ErrorRecord("Undeclared Data-Type", "Type " + tokens[tokenIndex].valuepart + " is undeclared", tokens[tokenIndex]));
-
-                    }
-                    record.type = tokens[tokenIndex].valuepart;
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
-                    if (checkIndex && variable_declaration_4(ref record))
+                    if (checkIndex && variable_declaration_4())
                         return true;
                     else return (tokenIndex == _tokenIndex);
                 }
@@ -973,55 +919,46 @@ namespace Compiler
             else return false;
         }
 
-        bool variable_declaration_4(ref VariableRecord record)
+        bool variable_declaration_4()
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "direct-assignment-operator")
             {
                 tokenIndex++;
-                string type = null;
-                if (checkIndex && isExpression(ref type))
-                {
-                    if (record.type == null) record.type = type;
-                    else if (!(record.type == type))
-                    {
-                        errors.Add(new ErrorRecord("Type Mismatch", "Type of the value of " + tokens[tokenIndex].valuepart + " is not a" + tokens[tokenIndex].classpart.name, tokens[tokenIndex]));
-                        return false;
-                    }
-
+                string name = null;
+                if (checkIndex && isExpression(ref name))
                     return true;
-                }
                 else return false;
             }
             else return false;
         }
         #endregion
         #region isExpression
-        bool isExpression(ref string type)
+        bool isExpression(ref string name)
         {
             string op = null;
-            return F(ref type, ref op);
+            return F(ref name, ref op);
         }
 
-        bool OE(ref string type, ref string op)
+        bool OE(ref string name, ref string op)
         {
-            if (AE(ref type, ref op))
+            if (AE(ref name, ref op))
             {
-                if (OE2(ref type, ref op))
+                if (OE2(ref name, ref op))
                     return true;
                 else return false;
             }
             else return false;
         }
 
-        bool OE2(ref string type, ref string op)
+        bool OE2(ref string name, ref string op)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "logical-operator-OR")
             {
                 op = tokens[tokenIndex].valuepart;
                 tokenIndex++;
-                if (AE(ref type, ref op))
+                if (AE(ref name, ref op))
                 {
-                    if (OE2(ref type, ref op))
+                    if (OE2(ref name, ref op))
                         return true;
                     else return false;
                 }
@@ -1030,25 +967,25 @@ namespace Compiler
             else return true;
         }
 
-        bool AE(ref string type, ref string op)
+        bool AE(ref string name, ref string op)
         {
-            if (ROP(ref type, ref op))
+            if (ROP(ref name, ref op))
             {
-                if (AE2(ref type, ref op))
+                if (AE2(ref name, ref op))
                     return true;
                 else return false;
             }
             else return false;
         }
 
-        bool AE2(ref string type, ref string op)
+        bool AE2(ref string name, ref string op)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "logical-operator-AND")
             {
                 op = tokens[tokenIndex].valuepart;
                 tokenIndex++;
-                if (ROP(ref type, ref op))
-                    if (AE2(ref type, ref op))
+                if (ROP(ref name, ref op))
+                    if (AE2(ref name, ref op))
                         return true;
                     else return false;
                 else return false;
@@ -1056,23 +993,23 @@ namespace Compiler
             else return true;
         }
 
-        bool ROP(ref string type, ref string op)
+        bool ROP(ref string name, ref string op)
         {
-            if (E(ref type, ref op))
-                if (ROP2(ref type, ref op))
+            if (E(ref name, ref op))
+                if (ROP2(ref name, ref op))
                     return true;
                 else return false;
             else return false;
         }
 
-        bool ROP2(ref string type, ref string op)
+        bool ROP2(ref string name, ref string op)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "relational-operator")
             {
                 op = tokens[tokenIndex].valuepart;
                 tokenIndex++;
-                if (E(ref type, ref op))
-                    if (ROP2(ref type, ref op))
+                if (E(ref name, ref op))
+                    if (ROP2(ref name, ref op))
                         return true;
                     else return false;
                 else return false;
@@ -1080,23 +1017,23 @@ namespace Compiler
             else return true;
         }
 
-        bool E(ref string type, ref string op)
+        bool E(ref string name, ref string op)
         {
-            if (T(ref type, ref op))
-                if (E2(ref type, ref op))
+            if (T(ref name, ref op))
+                if (E2(ref name, ref op))
                     return true;
                 else return false;
             else return false;
         }
 
-        bool E2(ref string type, ref string op)
+        bool E2(ref string name, ref string op)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "simple-arithmetic-operator")
             {
                 op = tokens[tokenIndex].valuepart;
                 tokenIndex++;
-                if (T(ref type, ref op))
-                    if (E2(ref type, ref op))
+                if (T(ref name, ref op))
+                    if (E2(ref name, ref op))
                         return true;
                     else return false;
                 else return false;
@@ -1104,23 +1041,23 @@ namespace Compiler
             else return true;
         }
 
-        bool T(ref string type, ref string op)
+        bool T(ref string name, ref string op)
         {
-            if (F(ref type, ref op))
-                if (T2(ref type, ref op))
+            if (F(ref name, ref op))
+                if (T2(ref name, ref op))
                     return true;
                 else return false;
             else return false;
         }
 
-        bool T2(ref string type, ref string op)
+        bool T2(ref string name, ref string op)
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "arithmetic-operator")
             {
                 op = tokens[tokenIndex].valuepart;
                 tokenIndex++;
-                if (F(ref type, ref op))
-                    if (T2(ref type, ref op))
+                if (F(ref name, ref op))
+                    if (T2(ref name, ref op))
                         return true;
                     else return false;
                 else return false;
@@ -1128,13 +1065,22 @@ namespace Compiler
             else return true;
         }
 
-        bool F(ref string type, ref string op)
-        {
+        bool F(ref string name, ref string op)
+{
             if (checkIndex && tokens[tokenIndex].classpart.name == "(")
             {
+                string _name = null;
+                string _op = null;
                 tokenIndex++;
-                if (OE(ref type, ref op))
+                if (OE(ref _name, ref _op))
                 {
+                    if (op == null) name = _name;
+                    else
+                    {
+                        string __name = generateVar();
+                        addToICG(__name + " " + "=" + " " + name + " " + op + " " + _name);
+                        name = __name;
+                    }
                     if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                     {
                         tokenIndex++;
@@ -1147,64 +1093,23 @@ namespace Compiler
             else if (checkIndex && tokens[tokenIndex].classpart.name == "!")
             {
                 tokenIndex++;
-                if (F(ref type, ref op))
+                if (F(ref name, ref op))
                     return true;
                 else return false;
             }
-            else if (after_assignment_operator_identifier())
+            else if (after_assignment_operator_identifier(ref name, ref op))
             {
-                string type_;
-                VariableRecord record = currentClass.scopeOfVariable(tokens[tokenIndex].valuepart);
-                if (record == null)
-                {
-                    errors.Add(new ErrorRecord("Undeclared Variable", ("Variable " + tokens[tokenIndex].valuepart + " is undeclared"), tokens[tokenIndex]));
-                    return false;
-                }
-                else type_ = record.type;
-
-                if (op == null) type = type_;
-                else if (compatible_type(type, op, type_) == null)
-                {
-                    errors.Add(new ErrorRecord("Incompatable Type", "Type Incompatability", tokens[tokenIndex]));
-                    return false;
-                }
-                else type = compatible_type(type, op, type_);
                 return true;
             }
             else if (checkIndex && constant())
             {
-                string type_;
-                switch (tokens[tokenIndex - 1].classpart.name)
-                {
-                    case "integer-constant":
-                        type_ = "Int";
-                        break;
-                    case "float-constant":
-                        type_ = "Float";
-                        break;
-                    case "character-constant":
-                        type_ = "Char";
-                        break;
-                    case "string-constant":
-                        type_ = "String";
-                        break;
-                    default:
-                        type_ = "Bool";
-                        break;
-                }
-
-                if (op == null) type = type_;
+                if (op == null) name = tokens[tokenIndex - 1].valuepart;
                 else
                 {
-                    string _type = compatible_type(type, op, type_);
-                    if (_type == null)  errors.Add(new ErrorRecord("Incompatable Type", "Type Incompatability", tokens[tokenIndex - 1]));
-                    else
-                    {
-                        type = _type;
-                        op = null;
-                    }
+                    string _name = generateVar();
+                    addToICG(_name + " " + "=" + " " + name + " " + op + " " + tokens[tokenIndex - 1].valuepart);
+                    name = _name;
                 }
-
                 return true;
             }
             else return false;
@@ -1245,8 +1150,8 @@ namespace Compiler
 
         bool array_values()
         {
-            string x = null;
-            if (isExpression(ref x))
+            string name = null;
+            if (isExpression(ref name))
             {
                 if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                 {
@@ -1257,7 +1162,8 @@ namespace Compiler
             }
             else return true;
         }
-        #endregion
 
     }
+        #endregion
 }
+

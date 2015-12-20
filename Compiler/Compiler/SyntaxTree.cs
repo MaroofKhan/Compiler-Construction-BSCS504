@@ -1031,7 +1031,8 @@ namespace Compiler
                 tokens[tokenIndex].classpart.name == "integer-constant" ||
                 tokens[tokenIndex].classpart.name == "float-constant" ||
                 tokens[tokenIndex].classpart.name == "character-constant" ||
-                tokens[tokenIndex].classpart.name == "string-constant"
+                tokens[tokenIndex].classpart.name == "string-constant" ||
+                tokens[tokenIndex].classpart.name == "boolean-constant"
                 )
             { tokenIndex++; return true; }
             else if (array_constant())

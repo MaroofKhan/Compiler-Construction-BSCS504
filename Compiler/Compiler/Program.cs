@@ -23,17 +23,28 @@ namespace Compiler
             
 
             string[] tokens = Filling.Read(tokenset);
-            /*SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
+            List<Token> _tokens = new List<Token>();
+            foreach (string token in tokens)
+                _tokens.Add(new Token(token));
+            ICGTree.MainSyntaxTree.analyze(_tokens.ToArray());
+            foreach (string line in ICGTree.MainSyntaxTree.intermediateCode.ToArray())
+                Console.WriteLine(line);
+            /*
+             * SyntaxAnalyzer SA = new SyntaxAnalyzer(tokens);
             int tokenIndex = SA.analyze();
-            */
-            int tokenIndex = 0;
+            
+            //int tokenIndex = 0;
 
 
             List<Token> _tokens = new List<Token>();
             foreach (string token in tokens)
                 _tokens.Add(new Token(token));
-            TestSemanticTree.x.parse(_tokens.ToArray());
+            TestSemanticTree.MainSemanticTree.parse(_tokens.ToArray());
+            List<ErrorRecord> errors= TestSemanticTree.MainSemanticTree.errors;
 
+            Console.WriteLine("Errors");
+            foreach (ErrorRecord record in errors.ToArray())
+                Console.WriteLine(record.identifier + ", " + record.type + ", "+ record._token.line);
             
             if (tokenIndex == -1)
             {
@@ -54,6 +65,7 @@ namespace Compiler
                 Console.WriteLine(line);
                 Console.WriteLine(error);
             }
+             * */
 
 
         }

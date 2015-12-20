@@ -1,4 +1,20 @@
-((3 + 2) * 3)
+whenever ((((3 + 3) * 3) < (5 + (6 * 6))) && NO) {
+whenever (4 * 9) {
+} else {
+}
+}
+
+repeat {
+} till (3 < 4)
+
+till (5 < 7) {
+}
+
+|-var x = 0
+var i:Int = 0
+var x = 3.0
+-|
+//((((3 + 2) * 3.3) < 4.4) && YES)
 |-var x: Int, y: Float, c: String
 firm z: A -|
 |-task sum (array:[Int]) returns Int {

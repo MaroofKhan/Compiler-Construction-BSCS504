@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICGTree.cs" />
     <Compile Include="ClassPart.cs" />
     <Compile Include="Filling.cs" />
     <Compile Include="Language.cs" />
