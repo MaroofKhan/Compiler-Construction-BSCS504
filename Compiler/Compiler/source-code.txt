@@ -1,7 +1,9 @@
 class c {
+}
+
+class c {
 task x () {
-var f = C()
-var c = f.x(3, 4.4)
+var y = x
 }
 }
 

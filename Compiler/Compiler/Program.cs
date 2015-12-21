@@ -44,7 +44,7 @@ namespace Compiler
                 else
                 {
                     foreach (ErrorRecord error in errors.ToArray())
-                        Console.WriteLine(error.identifier + "on line# " + error._token.line + "(" + error._token.valuepart + ")");
+                        Console.WriteLine(error.identifier + "on line# " + error._token.line + "(" + error.type + ")");
                 }
             
             }

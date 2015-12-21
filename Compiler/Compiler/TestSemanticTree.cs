@@ -276,15 +276,22 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
+                string id = tokens[tokenIndex].valuepart;
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "(")
                 {
                     tokenIndex++;
                     int _tokenIndex = tokenIndex;
-                    if (passables() || (tokenIndex == _tokenIndex))
+                    if (passables() || true)
                     {
                         if (checkIndex && tokens[tokenIndex].classpart.name == ")")
                         {
+                            FunctionRecord f = lookupFuncion(id);
+                            if (f == null)
+                            {
+                                errors.Add(new ErrorRecord("Undeclared Function", "Function named " + id + " has not been declared", tokens[tokenIndex]));
+                                return false;
+                            }
                             tokenIndex++;
                             return true;
                         }
@@ -300,6 +307,12 @@ namespace Compiler
                         tokenIndex++;
                         if (checkIndex && tokens[tokenIndex].classpart.name == "]")
                         {
+                            VariableRecord var = lookupVariable(id);
+                            if (var == null)
+                            {
+                                errors.Add(new ErrorRecord("Undeclared Variable", "Variable named " + id + " has not been declared", tokens[tokenIndex]));
+                                return false;
+                            }
                             tokenIndex++;
                             return true;
                         }
@@ -307,9 +320,24 @@ namespace Compiler
                     }
                     else if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                     {
+                        string _id = tokens[tokenIndex].valuepart;
                         tokenIndex++;
                         if (checkIndex && tokens[tokenIndex].classpart.name == "]")
                         {
+                            VariableRecord var = lookupVariable(id);
+                            if (var == null)
+                            {
+                                errors.Add(new ErrorRecord("Undeclared Variable", "Variable named " + id + " has not been declared", tokens[tokenIndex]));
+                                return false;
+                            }
+
+                            VariableRecord _var = lookupVariable(_id);
+                            if (_var == null)
+                            {
+                                errors.Add(new ErrorRecord("Undeclared Variable", "Variable named " + id + " has not been declared", tokens[tokenIndex]));
+                                return false;
+                            }
+
                             tokenIndex++;
                             return true;
                         }
@@ -669,16 +697,18 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    string id = tokens[tokenIndex].valuepart;
                     ClassRecord record = lookupClass(tokens[tokenIndex].valuepart);
                     ClassRecord r = new ClassRecord();
                     if (record == null)
                     {
                         r.identifier = tokens[tokenIndex].valuepart;
+                        classes.Add(r);
                         classStack.Push(r);
                     }
                     else
                     {
-                        errors.Add(new ErrorRecord("Redeclared Class", "Class named " + tokens[tokenIndex].valuepart + " has already been declared" , tokens[tokenIndex]));
+                        errors.Add(new ErrorRecord("Redeclared Class", "Class named " + id + " has already been declared" , tokens[tokenIndex]));
                         return false;
                     }
                     tokenIndex++;
@@ -686,7 +716,7 @@ namespace Compiler
                     {
                         tokenIndex++;
                         int __tokenIndex = tokenIndex;
-                        if (class_body() || (tokenIndex == __tokenIndex))
+                        if (class_body() || true)
                         {
                             if (checkIndex && tokens[tokenIndex].classpart.name == "}")
                             {
@@ -776,6 +806,7 @@ namespace Compiler
                 tokenIndex++;
                 if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
                 {
+                    string id = tokens[tokenIndex].valuepart;
                     FunctionRecord record = currentClass.lookupFunction(tokens[tokenIndex].valuepart);
                     FunctionRecord r = new FunctionRecord();
                     if (record == null)
@@ -784,7 +815,7 @@ namespace Compiler
                     }
                     else
                     {
-                        errors.Add(new ErrorRecord("Function Redeclaration", "Function named " + tokens[tokenIndex].valuepart + " already declared " + (currentClass.identifier == "global" ? "" : "in class " + currentClass.identifier), tokens[tokenIndex]));
+                        errors.Add(new ErrorRecord("Function Redeclaration", "Function named " + id + " already declared " + (currentClass.identifier == "global" ? "" : "in class " + currentClass.identifier), tokens[tokenIndex]));
                         return false;
                     }
                     tokenIndex++;
@@ -956,6 +987,7 @@ namespace Compiler
         {
             if (checkIndex && tokens[tokenIndex].classpart.name == "identifier")
             {
+                string id = tokens[tokenIndex].valuepart;
                 record.identifier = tokens[tokenIndex].valuepart;
                 tokenIndex++;
                 int _tokenIndex = tokenIndex;
@@ -964,7 +996,7 @@ namespace Compiler
                     VariableRecord _record = currentClass.lookupVariable(record.identifier);
                     if (_record == null)
                         currentClass.addVariable(record);
-                    else errors.Add(new ErrorRecord("Variable Redeclaration", "Variable " + tokens[tokenIndex].valuepart + " is already declared", tokens[tokenIndex]));
+                    else errors.Add(new ErrorRecord("Variable Redeclaration", "Variable " + id + " is already declared", tokens[tokenIndex]));
                     
                     if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                     {
@@ -978,7 +1010,7 @@ namespace Compiler
                     VariableRecord _record = currentClass.lookupVariable(record.identifier);
                     if (_record == null)
                         currentClass.addVariable(record);
-                    else errors.Add(new ErrorRecord("Variable Redeclaration", "Variable " + tokens[tokenIndex - 1].valuepart + " is already declared", tokens[tokenIndex - 1]));
+                    else errors.Add(new ErrorRecord("Variable Redeclaration", "Variable " + id + " is already declared", tokens[tokenIndex]));
                     
                     if (checkIndex && tokens[tokenIndex].classpart.name == ",")
                     {
