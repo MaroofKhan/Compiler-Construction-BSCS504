@@ -1,0 +1,9 @@
+def b_x_
+L0:
+t0 = 4 < 5
+if (t0 == false) jmp L1
+jmp L0
+L1:
+t1 = 63.232 * 7
+t2 = t1 + 8
+end b_x_
